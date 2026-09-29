@@ -1,0 +1,31 @@
+[
+  { "id": "pushup", "steps": ["pushup-incline", "pushup", "pushup-decline", "pushup-archer"], "defaultStep": 1, "unlockRule": { "sets": 3 } },
+  { "id": "pike", "steps": ["pike-pushup", "pike-pushup-elevated"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "db-floor-press", "steps": ["db-floor-press"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "db-shoulder-press", "steps": ["db-shoulder-press"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "db-lateral-raise", "steps": ["db-lateral-raise"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "bench-dip", "steps": ["bench-dip-bent", "bench-dip-straight"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "db-overhead-extension", "steps": ["db-overhead-extension"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+
+  { "id": "db-bent-over-row", "steps": ["db-bent-over-row"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "db-one-arm-row", "steps": ["db-one-arm-row"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "band-row", "steps": ["band-row"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "doorframe-row", "steps": ["doorframe-row"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "back-extension", "steps": ["superman", "prone-ytw"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "reverse-snow-angel", "steps": ["reverse-snow-angel"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "band-pull-apart", "steps": ["band-pull-apart"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "db-reverse-fly", "steps": ["db-reverse-fly"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "db-curl", "steps": ["db-curl"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "db-hammer-curl", "steps": ["db-hammer-curl"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "band-curl", "steps": ["band-curl"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+
+  { "id": "squat", "steps": ["chair-squat", "bodyweight-squat", "bulgarian-split-squat"], "defaultStep": 1, "unlockRule": { "sets": 3 } },
+  { "id": "db-goblet-squat", "steps": ["db-goblet-squat"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "reverse-lunge", "steps": ["reverse-lunge"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "glute-bridge", "steps": ["glute-bridge", "single-leg-glute-bridge"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "db-romanian-deadlift", "steps": ["db-romanian-deadlift"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "calf-raise", "steps": ["calf-raise", "single-leg-calf-raise"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+
+  { "id": "core-deadbug", "steps": ["dead-bug", "lying-leg-raise"], "defaultStep": 0, "unlockRule": { "sets": 3 } },
+  { "id": "core-crunch", "steps": ["crunch", "bicycle-crunch"], "defaultStep": 0, "unlockRule": { "sets": 3 } }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "push", "name": "Upper Body: Push", "tagline": "Chest, shoulders, triceps",
+    "warmupId": "warmup-upper",
+    "slots": [{ "movement": "push", "count": 2 }, { "movement": "isolation", "count": 2 }, { "movement": "core", "count": 1 }],
+    "chainIds": ["pushup", "pike", "db-floor-press", "db-shoulder-press", "db-lateral-raise", "bench-dip", "db-overhead-extension", "core-deadbug", "core-crunch"]
+  },
+  {
+    "id": "pull", "name": "Upper Body: Pull + Arms", "tagline": "Back, biceps, rear delts",
+    "warmupId": "warmup-upper",
+    "slots": [{ "movement": "pull", "count": 2 }, { "movement": "isolation", "count": 2 }, { "movement": "core", "count": 1 }],
+    "chainIds": ["db-bent-over-row", "db-one-arm-row", "band-row", "doorframe-row", "back-extension", "reverse-snow-angel", "band-pull-apart", "db-reverse-fly", "db-curl", "db-hammer-curl", "band-curl", "core-deadbug", "core-crunch"]
+  },
+  {
+    "id": "lower", "name": "Lower Body + Core", "tagline": "Quads, glutes, hamstrings, calves, abs",
+    "warmupId": "warmup-lower",
+    "slots": [{ "movement": "squat", "count": 2 }, { "movement": "hinge", "count": 1 }, { "movement": "core", "count": 1 }, { "movement": "isolation", "count": 1 }],
+    "chainIds": ["squat", "db-goblet-squat", "reverse-lunge", "glute-bridge", "db-romanian-deadlift", "calf-raise", "core-deadbug", "core-crunch"]
+  }
+]

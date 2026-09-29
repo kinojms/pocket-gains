@@ -1,0 +1,500 @@
+[
+  {
+    "id": "warmup-upper", "name": "Upper-Body Warm-up", "movement": "warmup", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [0, 0], "restSec": 0, "durationSec": 180,
+    "muscles": { "primary": ["shoulders", "upper back"], "secondary": ["wrists"] }, "regions": [],
+    "cues": [
+      "30 s arm circles, forwards then backwards",
+      "30 s shoulder-blade squeezes: pull shoulders back and down, hold 2 s, release",
+      "30 s cat-cow on hands and knees",
+      "10 slow, easy incline push-ups against a table or wall",
+      "30 s wrist circles and gentle wrist stretches"
+    ],
+    "mistakes": ["Rushing: this warms you up, it shouldn't tire you out", "Stretching into pain"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "warmup-lower", "name": "Lower-Body Warm-up", "movement": "warmup", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [0, 0], "restSec": 0, "durationSec": 180,
+    "muscles": { "primary": ["hips", "legs"], "secondary": ["lower back"] }, "regions": [],
+    "cues": [
+      "30 s marching in place with high knees",
+      "10 front-to-back leg swings per leg, holding a wall",
+      "10 hip circles in each direction",
+      "10 slow good mornings: hands on hips, hinge forward at the hips with a flat back",
+      "10 slow half squats"
+    ],
+    "mistakes": ["Rushing: this warms you up, it shouldn't tire you out", "Swinging legs so hard it pulls"],
+    "sources": ["nsca-estc"]
+  },
+
+  {
+    "id": "pushup-incline", "name": "Incline Push-up", "movement": "push", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [8, 15], "restSec": 120,
+    "muscles": { "primary": ["chest"], "secondary": ["triceps", "front delts"] }, "regions": ["chest", "arms"],
+    "cues": [
+      "Hands on a sturdy table or counter edge, slightly wider than your shoulders",
+      "Walk your feet back until your body is one straight line from head to heels",
+      "Lower your chest to the edge with elbows about 45° from your body",
+      "Press back up to straight arms"
+    ],
+    "mistakes": ["Hips sagging or piking up", "Elbows flaring straight out to the sides"],
+    "sources": ["nsca-estc", "acsm-2009"]
+  },
+  {
+    "id": "pushup", "name": "Push-up", "movement": "push", "equipment": "bodyweight", "rarity": 2,
+    "repRange": [8, 15], "restSec": 120,
+    "muscles": { "primary": ["chest"], "secondary": ["triceps", "front delts"] }, "regions": ["chest", "arms"],
+    "cues": [
+      "Hands under your shoulders, slightly wider, fingers spread",
+      "Squeeze your glutes and brace your abs so your body is a straight line",
+      "Lower until your chest is about a fist from the floor, elbows about 45°",
+      "Push the floor away to full lockout"
+    ],
+    "mistakes": ["Sagging hips", "Half reps: not going low enough", "Head dropping toward the floor"],
+    "sources": ["nsca-estc", "acsm-2009"]
+  },
+  {
+    "id": "pushup-decline", "name": "Decline Push-up", "movement": "push", "equipment": "bodyweight", "rarity": 2,
+    "repRange": [8, 15], "restSec": 120,
+    "muscles": { "primary": ["chest", "front delts"], "secondary": ["triceps"] }, "regions": ["chest", "shoulders", "arms"],
+    "cues": [
+      "Feet on a chair or sofa seat, hands on the floor slightly wider than your shoulders",
+      "Keep one straight line from head to heels",
+      "Lower your upper chest toward the floor, elbows about 45°",
+      "Press to full lockout"
+    ],
+    "mistakes": ["Hips sagging (the decline makes this easier to do)", "Using a surface that can slide"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "pushup-archer", "name": "Archer Push-up", "movement": "push", "equipment": "bodyweight", "rarity": 3,
+    "repRange": [5, 10], "perSide": true, "restSec": 120,
+    "muscles": { "primary": ["chest"], "secondary": ["triceps", "front delts"] }, "regions": ["chest", "arms"],
+    "cues": [
+      "Hands very wide, fingers turned slightly out",
+      "Lower toward one hand while the other arm straightens out to the side",
+      "Press back to the middle, then switch sides",
+      "Reps count per side"
+    ],
+    "mistakes": ["Letting your hips twist", "Bending the straight arm to cheat"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "pike-pushup", "name": "Pike Push-up", "movement": "push", "equipment": "bodyweight", "rarity": 2,
+    "repRange": [6, 12], "restSec": 120,
+    "muscles": { "primary": ["shoulders"], "secondary": ["triceps", "upper chest"] }, "regions": ["shoulders", "arms"],
+    "cues": [
+      "Start in a push-up, then walk your feet in and lift your hips high into an upside-down V",
+      "Bend your elbows to lower the top of your head toward the floor just in front of your hands",
+      "Press back up, keeping your hips high"
+    ],
+    "mistakes": ["Flaring elbows straight out", "Dropping your hips so it becomes a regular push-up"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "pike-pushup-elevated", "name": "Elevated Pike Push-up", "movement": "push", "equipment": "bodyweight", "rarity": 3,
+    "repRange": [5, 10], "restSec": 120,
+    "muscles": { "primary": ["shoulders"], "secondary": ["triceps", "upper chest"] }, "regions": ["shoulders", "arms"],
+    "cues": [
+      "Feet on a chair, hands on the floor, hips stacked high over your shoulders",
+      "Lower the top of your head toward the floor in front of your hands",
+      "Press back up until your arms are straight"
+    ],
+    "mistakes": ["Hips drifting back down", "Lowering too fast and bumping your head"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "db-floor-press", "name": "Dumbbell Floor Press", "movement": "push", "equipment": "dumbbell", "rarity": 1,
+    "repRange": [8, 12], "restSec": 120,
+    "muscles": { "primary": ["chest"], "secondary": ["triceps", "front delts"] }, "regions": ["chest", "arms"],
+    "cues": [
+      "Lie on your back, knees bent, a dumbbell in each hand above your chest",
+      "Lower until your upper arms touch the floor, elbows about 45°",
+      "Pause briefly, then press straight up"
+    ],
+    "mistakes": ["Bouncing your elbows off the floor", "Letting the dumbbells drift toward your face"],
+    "sources": ["nsca-estc", "acsm-2009"]
+  },
+  {
+    "id": "db-shoulder-press", "name": "Dumbbell Shoulder Press", "movement": "push", "equipment": "dumbbell", "rarity": 2,
+    "repRange": [8, 12], "restSec": 120,
+    "muscles": { "primary": ["shoulders"], "secondary": ["triceps"] }, "regions": ["shoulders", "arms"],
+    "cues": [
+      "Sit or stand tall with dumbbells at shoulder height",
+      "Brace your abs (and squeeze your glutes if standing)",
+      "Press overhead until your arms are straight, biceps near your ears",
+      "Lower under control back to shoulder height"
+    ],
+    "mistakes": ["Arching your lower back to push the weight up", "Pressing the weights forward instead of up"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "db-lateral-raise", "name": "Dumbbell Lateral Raise", "movement": "isolation", "equipment": "dumbbell", "rarity": 1,
+    "repRange": [10, 15], "restSec": 75,
+    "muscles": { "primary": ["side delts"], "secondary": ["traps"] }, "regions": ["shoulders"],
+    "cues": [
+      "Stand tall, light dumbbells at your sides, a slight bend in your elbows",
+      "Raise your arms out to the sides until they're level with your shoulders",
+      "Lower slowly, taking about 2 seconds"
+    ],
+    "mistakes": ["Swinging with your body", "Shrugging your shoulders up to your ears"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "bench-dip-bent", "name": "Chair Dip (Bent Knees)", "movement": "isolation", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [8, 15], "restSec": 75,
+    "muscles": { "primary": ["triceps"], "secondary": ["chest", "front delts"] }, "regions": ["arms"],
+    "cues": [
+      "Hands on the edge of a sturdy chair behind you, fingers pointing forward",
+      "Feet flat, knees bent at 90°, hips close to the chair",
+      "Bend your elbows straight back to lower until your upper arms are about parallel to the floor",
+      "Press back up to straight arms"
+    ],
+    "mistakes": ["Going too deep: stop if the front of your shoulder hurts", "Elbows flaring out", "Using a chair that can roll or tip"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "bench-dip-straight", "name": "Chair Dip (Straight Legs)", "movement": "isolation", "equipment": "bodyweight", "rarity": 2,
+    "repRange": [8, 15], "restSec": 75,
+    "muscles": { "primary": ["triceps"], "secondary": ["chest", "front delts"] }, "regions": ["arms"],
+    "cues": [
+      "Hands on the edge of a sturdy chair behind you, fingers pointing forward",
+      "Legs straight, heels on the floor",
+      "Bend your elbows straight back until your upper arms are about parallel to the floor",
+      "Press back up to straight arms"
+    ],
+    "mistakes": ["Going too deep: stop if the front of your shoulder hurts", "Elbows flaring out", "Using a chair that can roll or tip"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "db-overhead-extension", "name": "Dumbbell Overhead Triceps Extension", "movement": "isolation", "equipment": "dumbbell", "rarity": 1,
+    "repRange": [10, 15], "restSec": 75,
+    "muscles": { "primary": ["triceps"], "secondary": [] }, "regions": ["arms"],
+    "cues": [
+      "Hold one dumbbell with both hands overhead, arms straight",
+      "Keeping your elbows pointing forward, lower the weight behind your head",
+      "Straighten your arms to lift it back up"
+    ],
+    "mistakes": ["Elbows flaring wide", "Arching your lower back"],
+    "sources": ["nsca-estc"]
+  },
+
+  {
+    "id": "db-bent-over-row", "name": "Dumbbell Bent-Over Row", "movement": "pull", "equipment": "dumbbell", "rarity": 1,
+    "repRange": [8, 12], "restSec": 120,
+    "muscles": { "primary": ["lats", "upper back"], "secondary": ["biceps", "rear delts"] }, "regions": ["back", "arms"],
+    "cues": [
+      "Hold the dumbbells and hinge at the hips until your torso is about 45°, knees soft, back flat",
+      "Pull the dumbbells toward your lower ribs, squeezing your shoulder blades together",
+      "Lower slowly until your arms are straight"
+    ],
+    "mistakes": ["Rounding your back", "Jerking the weight up with your hips"],
+    "sources": ["nsca-estc", "acsm-2009"]
+  },
+  {
+    "id": "db-one-arm-row", "name": "One-Arm Dumbbell Row", "movement": "pull", "equipment": "dumbbell", "rarity": 1,
+    "repRange": [8, 12], "perSide": true, "restSec": 120,
+    "muscles": { "primary": ["lats", "upper back"], "secondary": ["biceps", "rear delts"] }, "regions": ["back", "arms"],
+    "cues": [
+      "One hand and knee on a chair or sofa, other foot on the floor, back flat",
+      "Pull the dumbbell toward your hip, elbow close to your body",
+      "Lower until your arm is straight. Reps count per side"
+    ],
+    "mistakes": ["Twisting your torso to lift", "Shrugging instead of pulling with your back"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "band-row", "name": "Seated Band Row", "movement": "pull", "equipment": "band", "rarity": 1,
+    "repRange": [10, 15], "restSec": 120,
+    "muscles": { "primary": ["upper back", "lats"], "secondary": ["biceps"] }, "regions": ["back", "arms"],
+    "cues": [
+      "Sit with legs straight, band looped around your feet, one end in each hand",
+      "Sit tall and pull the ends to your belly, elbows close to your body",
+      "Squeeze your shoulder blades together for a second, then release slowly"
+    ],
+    "mistakes": ["Leaning back to cheat", "Letting the band snap back"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "doorframe-row", "name": "Door-Frame Row", "movement": "pull", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [8, 15], "restSec": 120,
+    "muscles": { "primary": ["upper back", "lats"], "secondary": ["biceps", "rear delts"] }, "regions": ["back", "arms"],
+    "cues": [
+      "Stand in an open doorway, feet close to the frame, and grip both sides of a solid frame at chest height",
+      "Lean back with straight arms, body in a straight line",
+      "Pull your chest toward the frame by driving your elbows back",
+      "Lower slowly. Step your feet further in to make it harder"
+    ],
+    "mistakes": ["Using a weak or loose door frame: test it first", "Bending at the hips instead of keeping a straight body"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "superman", "name": "Superman", "movement": "pull", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [10, 15], "restSec": 60,
+    "muscles": { "primary": ["lower back", "glutes"], "secondary": ["upper back"] }, "regions": ["back"],
+    "cues": [
+      "Lie face down with your arms stretched overhead",
+      "Lift your arms, chest and legs a few centimetres off the floor",
+      "Hold for 2 seconds, then lower slowly"
+    ],
+    "mistakes": ["Cranking your neck up: keep looking at the floor", "Jerking up quickly"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "prone-ytw", "name": "Prone Y-T-W Raise", "movement": "pull", "equipment": "bodyweight", "rarity": 2,
+    "repRange": [6, 10], "restSec": 60,
+    "muscles": { "primary": ["upper back", "rear delts"], "secondary": ["lower traps"] }, "regions": ["back", "shoulders"],
+    "cues": [
+      "Lie face down with your forehead on a folded towel",
+      "Lift your arms into a Y shape, thumbs up, hold 2 s, lower",
+      "Repeat in a T shape, then a W shape with elbows bent. One Y-T-W is one rep"
+    ],
+    "mistakes": ["Lifting with your lower back instead of your shoulder blades", "Rushing the holds"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "reverse-snow-angel", "name": "Reverse Snow Angel", "movement": "isolation", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [10, 15], "restSec": 75,
+    "muscles": { "primary": ["rear delts", "upper back"], "secondary": [] }, "regions": ["back", "shoulders"],
+    "cues": [
+      "Lie face down, arms by your sides, palms down, arms lifted slightly off the floor",
+      "Sweep your arms in a wide arc overhead, keeping them off the floor",
+      "Sweep back to your sides. That's one rep"
+    ],
+    "mistakes": ["Resting your arms on the floor between reps", "Shrugging your shoulders"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "band-pull-apart", "name": "Band Pull-Apart", "movement": "isolation", "equipment": "band", "rarity": 1,
+    "repRange": [12, 20], "restSec": 75,
+    "muscles": { "primary": ["rear delts", "upper back"], "secondary": [] }, "regions": ["back", "shoulders"],
+    "cues": [
+      "Hold a band in front of you at shoulder height, hands shoulder-width apart, arms straight",
+      "Pull the band apart until it touches your chest, squeezing your shoulder blades",
+      "Return slowly"
+    ],
+    "mistakes": ["Bending your elbows a lot", "Arching your back"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "db-reverse-fly", "name": "Dumbbell Reverse Fly", "movement": "isolation", "equipment": "dumbbell", "rarity": 1,
+    "repRange": [10, 15], "restSec": 75,
+    "muscles": { "primary": ["rear delts"], "secondary": ["upper back"] }, "regions": ["back", "shoulders"],
+    "cues": [
+      "Hinge forward until your torso is nearly parallel to the floor, light dumbbells hanging down",
+      "With a slight bend in your elbows, raise your arms out to the sides",
+      "Squeeze your shoulder blades at the top, then lower slowly"
+    ],
+    "mistakes": ["Going too heavy and swinging", "Rounding your back"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "db-curl", "name": "Dumbbell Biceps Curl", "movement": "isolation", "equipment": "dumbbell", "rarity": 1,
+    "repRange": [8, 12], "restSec": 75,
+    "muscles": { "primary": ["biceps"], "secondary": ["forearms"] }, "regions": ["arms"],
+    "cues": [
+      "Stand tall, dumbbells at your sides, palms facing forward",
+      "Keeping your elbows pinned to your sides, curl the weights up to your shoulders",
+      "Lower slowly all the way down"
+    ],
+    "mistakes": ["Swinging your body", "Elbows drifting forward"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "db-hammer-curl", "name": "Dumbbell Hammer Curl", "movement": "isolation", "equipment": "dumbbell", "rarity": 1,
+    "repRange": [8, 12], "restSec": 75,
+    "muscles": { "primary": ["biceps", "brachialis"], "secondary": ["forearms"] }, "regions": ["arms"],
+    "cues": [
+      "Stand tall, dumbbells at your sides, palms facing each other",
+      "Keeping your elbows pinned, curl the weights up with palms still facing in",
+      "Lower slowly all the way down"
+    ],
+    "mistakes": ["Swinging your body", "Elbows drifting forward"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "band-curl", "name": "Band Biceps Curl", "movement": "isolation", "equipment": "band", "rarity": 1,
+    "repRange": [12, 20], "restSec": 75,
+    "muscles": { "primary": ["biceps"], "secondary": ["forearms"] }, "regions": ["arms"],
+    "cues": [
+      "Stand on the middle of the band, one end in each hand, palms forward",
+      "Keeping your elbows pinned, curl your hands up to your shoulders",
+      "Lower slowly against the band's pull"
+    ],
+    "mistakes": ["Letting the band yank your arms down", "Leaning back"],
+    "sources": ["nsca-estc"]
+  },
+
+  {
+    "id": "chair-squat", "name": "Chair Squat", "movement": "squat", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [10, 15], "restSec": 120,
+    "muscles": { "primary": ["quads", "glutes"], "secondary": ["hamstrings"] }, "regions": ["legs"],
+    "cues": [
+      "Stand in front of a sturdy chair, feet shoulder-width apart, toes slightly out",
+      "Push your hips back and bend your knees to lightly touch the seat. Don't sit down",
+      "Drive through your whole foot to stand up tall"
+    ],
+    "mistakes": ["Knees caving inward", "Dropping onto the chair"],
+    "sources": ["nsca-estc", "acsm-2009"]
+  },
+  {
+    "id": "bodyweight-squat", "name": "Bodyweight Squat", "movement": "squat", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [12, 20], "restSec": 120,
+    "muscles": { "primary": ["quads", "glutes"], "secondary": ["hamstrings"] }, "regions": ["legs"],
+    "cues": [
+      "Feet shoulder-width apart, toes slightly out, arms forward for balance",
+      "Sit your hips back and down until your thighs are at least parallel to the floor",
+      "Keep your chest up and knees tracking over your toes",
+      "Stand up by pushing the floor away"
+    ],
+    "mistakes": ["Heels lifting", "Knees caving inward"],
+    "sources": ["nsca-estc", "acsm-2009"]
+  },
+  {
+    "id": "bulgarian-split-squat", "name": "Bulgarian Split Squat", "movement": "squat", "equipment": "bodyweight", "rarity": 3,
+    "repRange": [8, 12], "perSide": true, "restSec": 120,
+    "muscles": { "primary": ["quads", "glutes"], "secondary": ["hamstrings", "adductors"] }, "regions": ["legs"],
+    "cues": [
+      "Stand about two steps in front of a chair and rest the top of your back foot on the seat",
+      "Lower straight down until your front thigh is about parallel to the floor",
+      "Push through your front heel to stand. Reps count per side"
+    ],
+    "mistakes": ["Front knee caving in", "Standing too close to the chair"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "db-goblet-squat", "name": "Dumbbell Goblet Squat", "movement": "squat", "equipment": "dumbbell", "rarity": 1,
+    "repRange": [8, 12], "restSec": 120,
+    "muscles": { "primary": ["quads", "glutes"], "secondary": ["core", "upper back"] }, "regions": ["legs", "core"],
+    "cues": [
+      "Hold one dumbbell upright against your chest",
+      "Feet shoulder-width apart; sit down between your heels, elbows inside your knees",
+      "Keep your chest up and stand by pushing the floor away"
+    ],
+    "mistakes": ["Rounding your back", "Heels lifting"],
+    "sources": ["nsca-estc", "acsm-2009"]
+  },
+  {
+    "id": "reverse-lunge", "name": "Reverse Lunge", "movement": "squat", "equipment": "bodyweight", "rarity": 2,
+    "repRange": [8, 12], "perSide": true, "restSec": 120,
+    "muscles": { "primary": ["quads", "glutes"], "secondary": ["hamstrings"] }, "regions": ["legs"],
+    "cues": [
+      "Stand tall, then step one foot back",
+      "Lower until both knees are bent about 90°, back knee just above the floor",
+      "Push through your front heel to return. Reps count per side"
+    ],
+    "mistakes": ["Front knee collapsing inward", "Leaning your torso far forward"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "glute-bridge", "name": "Glute Bridge", "movement": "hinge", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [12, 20], "restSec": 120,
+    "muscles": { "primary": ["glutes"], "secondary": ["hamstrings"] }, "regions": ["legs"],
+    "cues": [
+      "Lie on your back, knees bent, feet flat and hip-width apart",
+      "Squeeze your glutes and lift your hips until your body is straight from shoulders to knees",
+      "Pause for 1 second, then lower slowly"
+    ],
+    "mistakes": ["Arching your lower back at the top", "Pushing through your toes instead of your heels"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "single-leg-glute-bridge", "name": "Single-Leg Glute Bridge", "movement": "hinge", "equipment": "bodyweight", "rarity": 2,
+    "repRange": [8, 15], "perSide": true, "restSec": 120,
+    "muscles": { "primary": ["glutes"], "secondary": ["hamstrings"] }, "regions": ["legs"],
+    "cues": [
+      "Lie on your back, one knee bent with the foot flat, the other leg straight in the air",
+      "Drive through the planted heel to lift your hips level",
+      "Pause for 1 second, then lower slowly. Reps count per side"
+    ],
+    "mistakes": ["Hips tilting to one side", "Arching your lower back"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "db-romanian-deadlift", "name": "Dumbbell Romanian Deadlift", "movement": "hinge", "equipment": "dumbbell", "rarity": 2,
+    "repRange": [8, 12], "restSec": 120,
+    "muscles": { "primary": ["hamstrings", "glutes"], "secondary": ["lower back"] }, "regions": ["legs", "back"],
+    "cues": [
+      "Stand with dumbbells in front of your thighs, knees slightly bent",
+      "Push your hips back, sliding the weights down your legs with a flat back",
+      "Stop when you feel a strong hamstring stretch, around mid-shin",
+      "Squeeze your glutes to stand back up"
+    ],
+    "mistakes": ["Rounding your back", "Bending your knees so much it becomes a squat"],
+    "sources": ["nsca-estc", "acsm-2009"]
+  },
+  {
+    "id": "calf-raise", "name": "Calf Raise", "movement": "isolation", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [12, 20], "restSec": 60,
+    "muscles": { "primary": ["calves"], "secondary": [] }, "regions": ["legs"],
+    "cues": [
+      "Stand on the edge of a step, holding a wall for balance",
+      "Lower your heels below the step",
+      "Rise onto the balls of your feet as high as you can and pause for 1 second"
+    ],
+    "mistakes": ["Bouncing", "Only moving through a short range"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "single-leg-calf-raise", "name": "Single-Leg Calf Raise", "movement": "isolation", "equipment": "bodyweight", "rarity": 2,
+    "repRange": [8, 15], "perSide": true, "restSec": 60,
+    "muscles": { "primary": ["calves"], "secondary": [] }, "regions": ["legs"],
+    "cues": [
+      "Stand on one foot on the edge of a step, holding a wall",
+      "Lower your heel below the step",
+      "Rise as high as you can and pause for 1 second. Reps count per side"
+    ],
+    "mistakes": ["Bouncing", "Only moving through a short range"],
+    "sources": ["nsca-estc"]
+  },
+
+  {
+    "id": "dead-bug", "name": "Dead Bug", "movement": "core", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [8, 12], "perSide": true, "restSec": 60,
+    "muscles": { "primary": ["abs"], "secondary": ["hip flexors"] }, "regions": ["core"],
+    "cues": [
+      "Lie on your back, arms pointing at the ceiling, knees bent 90° above your hips",
+      "Press your lower back into the floor",
+      "Slowly extend the opposite arm and leg toward the floor, then return. Alternate sides"
+    ],
+    "mistakes": ["Lower back lifting off the floor", "Moving too fast"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "lying-leg-raise", "name": "Lying Leg Raise", "movement": "core", "equipment": "bodyweight", "rarity": 2,
+    "repRange": [8, 15], "restSec": 60,
+    "muscles": { "primary": ["abs"], "secondary": ["hip flexors"] }, "regions": ["core"],
+    "cues": [
+      "Lie on your back, legs straight, hands under your hips",
+      "Press your lower back down and raise your legs to vertical",
+      "Lower slowly, stopping before your lower back arches"
+    ],
+    "mistakes": ["Arching your lower back", "Swinging your legs"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "crunch", "name": "Crunch", "movement": "core", "equipment": "bodyweight", "rarity": 1,
+    "repRange": [12, 20], "restSec": 60,
+    "muscles": { "primary": ["abs"], "secondary": [] }, "regions": ["core"],
+    "cues": [
+      "Lie on your back, knees bent, fingertips at your temples",
+      "Curl your shoulders off the floor by squeezing your abs",
+      "Lower slowly"
+    ],
+    "mistakes": ["Pulling on your neck", "Coming all the way up (that's a sit-up)"],
+    "sources": ["nsca-estc"]
+  },
+  {
+    "id": "bicycle-crunch", "name": "Bicycle Crunch", "movement": "core", "equipment": "bodyweight", "rarity": 2,
+    "repRange": [12, 20], "restSec": 60,
+    "muscles": { "primary": ["abs", "obliques"], "secondary": ["hip flexors"] }, "regions": ["core"],
+    "cues": [
+      "Lie on your back, fingertips at your temples, knees lifted",
+      "Bring one elbow toward the opposite knee while the other leg straightens",
+      "Switch sides in a slow pedalling motion. Each side counts as a rep"
+    ],
+    "mistakes": ["Pulling on your neck", "Racing through reps"],
+    "sources": ["nsca-estc"]
+  }
+]
