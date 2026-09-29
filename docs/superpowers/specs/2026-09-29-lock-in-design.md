@@ -47,7 +47,11 @@ Each deck also includes secondary muscles. The **recommended weekly plan rotates
 
 - **Frontend:** React + Vite + TypeScript PWA (`vite-plugin-pwa`), installable to the Android home screen.
 - **Backend:** Supabase — Auth (single user), Postgres with Row Level Security, Edge Function + `pg_cron` for Web Push reminders.
-- **Hosting:** frontend on **Vercel** (free tier; automatic HTTPS, deploys on push to `main`, preview URLs per branch). Supabase hosts itself. HTTPS is required for PWA install, service workers and push, so the app must be hosted rather than run only locally.
+- **Hosting:** frontend on **GitHub Pages**, deployed by a GitHub Actions workflow on push to `main`. Supabase hosts itself. HTTPS is required for PWA install, service workers and push, so the app must be hosted rather than run only locally.
+  - **Public repo** (free-tier Pages). Only public-safe config is committed (Supabase URL + anon key, VAPID public key). The Supabase service-role key and VAPID private key live only in Supabase / GitHub Actions secrets. Data protection relies on RLS.
+  - **Subpath:** site is served at `https://<user>.github.io/lock_in/` — Vite `base`, PWA manifest `start_url` and `scope` are set to `/lock_in/`.
+  - **Routing:** hash routing (`/#/progress`) so deep links and refreshes work without server rewrites.
+  - **No preview deploys:** branches are tested locally (Vite dev server, reachable from the phone on the home network).
 
 ```
 Phone (PWA)
