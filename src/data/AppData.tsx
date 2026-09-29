@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { ActiveSession } from '../domain/session'
 import { EMPTY_HISTORY, type History, type Profile } from '../domain/types'
 import type { PullState } from '../gate'
+import { PetColorContext } from '../ui/petColor'
 import { db as defaultDb, type PocketGainsDB } from './db'
 import { supabaseRemote } from './remote'
 import { clearAll, countDirty, getProfile, loadActive, loadHistory, recoverStaleSession } from './repo'
@@ -169,7 +170,11 @@ export function AppDataProvider({ children, database = defaultDb }: { children: 
     signOut,
     retryPull: () => window.location.reload(),
   }
-  return <Ctx.Provider value={value}>{children}</Ctx.Provider>
+  return (
+    <Ctx.Provider value={value}>
+      <PetColorContext.Provider value={loaded.profile?.petColor ?? 'mint'}>{children}</PetColorContext.Provider>
+    </Ctx.Provider>
+  )
 }
 
 export function useAppData(): AppData {

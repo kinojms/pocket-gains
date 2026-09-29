@@ -1,6 +1,6 @@
 # Pocket Gains
 
-Deckbuilder home workouts with a pixel pet that grows with you. Installable PWA; data syncs to Supabase.
+Deckbuilder home workouts with a cute blob pet that grows with you. Installable PWA; data syncs to Supabase.
 
 ## Develop
 
@@ -13,7 +13,8 @@ Deckbuilder home workouts with a pixel pet that grows with you. Installable PWA;
 
 ### Supabase
 1. Create a free project at supabase.com.
-2. SQL Editor → paste and run `supabase/migrations/20260929000000_init.sql`.
+2. SQL Editor → paste and run each file in `supabase/migrations/`, oldest first
+   (`20260929000000_init.sql`, then `20260930000000_pet_color.sql`).
 3. Authentication → Users → **Add user** → create your email + password (auto-confirm).
 4. Authentication → Sign In / Providers → turn **off** "Allow new users to sign up".
    The repo and anon key are public, so this stops strangers from creating accounts.

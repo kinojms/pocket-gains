@@ -18,10 +18,11 @@ describe('ProfileScreen', () => {
     const name = screen.getByRole('textbox', { name: /Pet name/ })
     await user.clear(name)
     await user.type(name, 'Tank')
+    await user.click(screen.getByRole('radio', { name: 'Sky' }))
     await user.click(screen.getByRole('button', { name: 'Save changes' }))
 
     await waitFor(async () =>
-      expect(await getProfile(db)).toEqual({ ...original, experience: 'returning', equipment: ['bodyweight', 'band'], petName: 'Tank' }),
+      expect(await getProfile(db)).toEqual({ ...original, experience: 'returning', equipment: ['bodyweight', 'band'], petName: 'Tank', petColor: 'sky' }),
     )
     expect(await screen.findByText('Saved ✓')).toBeInTheDocument()
   })

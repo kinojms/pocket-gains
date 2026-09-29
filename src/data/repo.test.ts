@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { startSession } from '../domain/session'
 import { makeProfile, makeSession } from '../domain/testFixtures'
-import { PocketGainsDB } from './db'
+import { PocketGainsDB, type LocalProfile } from './db'
 import {
   addSetLogs, addSoreness, countDirty, createSession, getProfile, loadActive, loadHistory,
   recoverStaleSession, saveActive, saveProfile, updateSession,
@@ -26,6 +26,12 @@ describe('repo', () => {
     await saveProfile(db, makeProfile({ petName: 'Mochi' }))
     expect(await getProfile(db)).toEqual(makeProfile({ petName: 'Mochi' }))
     expect(await countDirty(db)).toBe(1)
+  })
+
+  it('reads a profile saved before pet colours existed as mint', async () => {
+    const { petColor: _omit, ...old } = makeProfile({ petColor: 'rose' })
+    await db.profile.put({ ...old, id: 'me', dirty: 0, updatedAt: '2026-01-01T00:00:00.000Z' } as unknown as LocalProfile)
+    expect((await getProfile(db))?.petColor).toBe('mint')
   })
 
   it('stores sessions, sets and soreness and returns clean domain objects', async () => {

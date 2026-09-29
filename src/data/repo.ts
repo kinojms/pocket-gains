@@ -25,6 +25,8 @@ function toProfile(row: LocalProfile): Profile {
     onboardedAt: row.onboardedAt,
     equipment: row.equipment,
     petName: row.petName,
+    // profiles saved before pet colours existed
+    petColor: row.petColor ?? 'mint',
     timezone: row.timezone,
   }
 }

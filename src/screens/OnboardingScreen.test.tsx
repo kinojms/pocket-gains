@@ -38,12 +38,14 @@ describe('OnboardingScreen', () => {
     const name = screen.getByRole('textbox', { name: /name/i })
     await user.clear(name)
     await user.type(name, 'Mochi')
+    await user.click(screen.getByRole('radio', { name: 'Lavender' }))
+    expect(screen.getByRole('radio', { name: 'Lavender' })).toHaveAttribute('aria-checked', 'true')
     await user.click(screen.getByRole('button', { name: /Hatch/ }))
 
     await screen.findByText('HOME')
     await waitFor(async () => {
       expect(await getProfile(db)).toMatchObject({
-        goal: 'muscle_strength', experience: 'returning', equipment: ['bodyweight', 'dumbbell'], petName: 'Mochi',
+        goal: 'muscle_strength', experience: 'returning', equipment: ['bodyweight', 'dumbbell'], petName: 'Mochi', petColor: 'lavender',
       })
     })
   })

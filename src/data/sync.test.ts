@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { makeProfile, makeSession } from '../domain/testFixtures'
 import { PocketGainsDB } from './db'
 import type { Remote, RemoteTable, Row } from './remote'
-import { addSetLogs, countDirty, createSession, loadHistory, saveProfile, updateSession } from './repo'
+import { addSetLogs, countDirty, createSession, getProfile, loadHistory, saveProfile, updateSession } from './repo'
 import { pullAll, pushDirty } from './sync'
 
 class FakeRemote implements Remote {
@@ -51,7 +51,7 @@ describe('pushDirty', () => {
     await pushDirty(db, remote)
     const row = [...remote.tables.set_log.values()].find((r) => r.exercise_id === 'db-curl')!
     expect(row).toMatchObject({ session_id: '11111111-1111-4111-8111-111111111111', set_no: 1, reps: 9, weight_kg: 7.5, stopped_for_pain: false })
-    expect(remote.tables.profile.get('me')).toMatchObject({ pet_name: 'Biscuit', onboarded_at: makeProfile().onboardedAt })
+    expect(remote.tables.profile.get('me')).toMatchObject({ pet_name: 'Biscuit', pet_color: 'mint', onboarded_at: makeProfile().onboardedAt })
   })
 
   it('a failure halfway keeps unsent rows dirty; a retry sends them once, with no duplicates', async () => {
@@ -84,6 +84,19 @@ describe('pullAll', () => {
     await pullAll(fresh, remote)
     expect(await loadHistory(fresh)).toEqual(await loadHistory(db))
     expect(await countDirty(fresh)).toBe(0)
+  })
+
+  it('restores the pet colour, defaulting to mint when the column is missing', async () => {
+    await pushDirty(db, remote)
+    remote.tables.profile.set('me', { ...remote.tables.profile.get('me')!, pet_color: 'sky' })
+    const fresh = new PocketGainsDB(`test-${crypto.randomUUID()}`)
+    await pullAll(fresh, remote)
+    expect((await getProfile(fresh))?.petColor).toBe('sky')
+    const { pet_color: _gone, ...legacy } = remote.tables.profile.get('me')!
+    remote.tables.profile.set('me', legacy)
+    const fresh2 = new PocketGainsDB(`test-${crypto.randomUUID()}`)
+    await pullAll(fresh2, remote)
+    expect((await getProfile(fresh2))?.petColor).toBe('mint')
   })
 
   it('never overwrites a local row that has unsynced changes', async () => {

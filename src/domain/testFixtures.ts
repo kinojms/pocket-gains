@@ -10,6 +10,7 @@ export function makeProfile(o: Partial<Profile> = {}): Profile {
     onboardedAt: T0,
     equipment: ['bodyweight', 'dumbbell', 'band'],
     petName: 'Biscuit',
+    petColor: 'mint',
     timezone: 'UTC',
     ...o,
   }

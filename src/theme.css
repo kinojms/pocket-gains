@@ -58,9 +58,9 @@ input[type='text'], input[type='email'], input[type='password'] { width: 100%; p
 
 .sheet-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); display: flex; align-items: flex-end; justify-content: center; z-index: 10; }
 .sheet { background: var(--surface); width: 100%; max-width: 520px; border-radius: 16px 16px 0 0; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; }
-@keyframes pet-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-.pet-bounce { animation: pet-bounce 1.6s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) { .pet-bounce { animation: none; } }
+@keyframes pet-squish { 0%, 100% { transform: translateY(0) scale(1, 1); } 40% { transform: translateY(-6px) scale(0.96, 1.04); } 80% { transform: translateY(0) scale(1.06, 0.94); } }
+.pet-squish { animation: pet-squish 1.8s ease-in-out infinite; transform-origin: 50% 90%; }
+@media (prefers-reduced-motion: reduce) { .pet-squish { animation: none; } }
 .pet-stage { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px 0 8px; background: radial-gradient(circle at 50% 60%, var(--surface-2), var(--bg) 70%); border-radius: var(--radius); }
 .center-text { text-align: center; text-decoration: none; display: block; }
 a.choice { text-decoration: none; }
@@ -94,3 +94,6 @@ select { padding: 10px; border-radius: var(--radius); background: var(--ink); co
 .card-grid .tcg-stats { flex-direction: column; font-size: 12px; }
 .unavailable { opacity: 0.45; }
 .stat { font-size: 28px; }
+.swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+.swatch { width: 40px; height: 40px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; padding: 0; }
+.swatch[aria-checked='true'] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--bg) inset; }

@@ -3,6 +3,8 @@ import { SOURCES } from '../content/sources'
 import { useAppData } from '../data/AppData'
 import { saveProfile } from '../data/repo'
 import type { Equipment, Profile } from '../domain/types'
+import { PetColorPicker } from '../ui/PetColorPicker'
+import { PetSprite } from '../ui/PetSprite'
 import { EXPERIENCES, OPTIONAL_EQUIPMENT } from '../ui/profileOptions'
 
 export function ProfileScreen() {
@@ -70,6 +72,10 @@ function ProfileForm({ initial }: { initial: Profile }) {
         <span className="label">Pet name</span>
         <input type="text" maxLength={20} value={draft.petName} onChange={(e) => edit({ petName: e.target.value })} />
       </label>
+      <div className="row" style={{ alignItems: 'center', gap: 12 }}>
+        <PetSprite size={72} color={draft.petColor} />
+        <PetColorPicker value={draft.petColor} onChange={(petColor) => edit({ petColor })} />
+      </div>
 
       <button className="btn btn-primary btn-block" onClick={() => void save()}>Save changes</button>
       {saved && <p role="status">Saved ✓</p>}

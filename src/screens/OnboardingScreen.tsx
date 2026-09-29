@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router'
 import { useAppData } from '../data/AppData'
 import { saveProfile } from '../data/repo'
-import type { Equipment, Experience } from '../domain/types'
+import type { Equipment, Experience, PetColor } from '../domain/types'
+import { PetColorPicker } from '../ui/PetColorPicker'
 import { PetSprite } from '../ui/PetSprite'
 import { EXPERIENCES, OPTIONAL_EQUIPMENT } from '../ui/profileOptions'
 
@@ -14,6 +15,7 @@ export function OnboardingScreen() {
   const [experience, setExperience] = useState<Experience | null>(null)
   const [equipment, setEquipment] = useState<Equipment[]>(['bodyweight'])
   const [petName, setPetName] = useState('Biscuit')
+  const [petColor, setPetColor] = useState<PetColor>('mint')
 
   if (profile) return <Navigate to="/" replace />
 
@@ -27,6 +29,7 @@ export function OnboardingScreen() {
       onboardedAt: new Date().toISOString(),
       equipment: (['bodyweight', 'dumbbell', 'band'] as Equipment[]).filter((e) => equipment.includes(e)),
       petName: petName.trim() || 'Biscuit',
+      petColor,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     })
     await afterWrite()
@@ -88,11 +91,12 @@ export function OnboardingScreen() {
       {step === 3 && (
         <section className="stack" style={{ alignItems: 'center', textAlign: 'center' }}>
           <h2>Meet your training buddy</h2>
-          <PetSprite size={180} bounce />
+          <PetSprite size={180} bounce color={petColor} />
           <label className="stack" style={{ width: '100%' }}>
             <span className="label">Pet name</span>
             <input type="text" value={petName} maxLength={20} onChange={(e) => setPetName(e.target.value)} />
           </label>
+          <PetColorPicker value={petColor} onChange={setPetColor} />
           <button className="btn btn-primary btn-block" onClick={() => void finish()}>Hatch &amp; start ▶</button>
         </section>
       )}

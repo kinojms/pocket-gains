@@ -3,6 +3,7 @@ export type Equipment = 'bodyweight' | 'dumbbell' | 'band'
 export type Region = 'arms' | 'chest' | 'back' | 'shoulders' | 'core' | 'legs'
 export type Experience = 'new' | 'returning' | 'consistent'
 export type Goal = 'muscle_strength'
+export type PetColor = 'mint' | 'peach' | 'lavender' | 'sky' | 'lemon' | 'rose'
 
 export interface Exercise {
   id: string
@@ -64,6 +65,7 @@ export interface Profile {
   onboardedAt: string
   equipment: Equipment[]
   petName: string
+  petColor: PetColor
   timezone: string
 }
 

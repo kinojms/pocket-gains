@@ -1,5 +1,5 @@
 import type { Table } from 'dexie'
-import type { EndReason, Experience, Goal, HandCard, SessionSettings, SessionStatus, Equipment } from '../domain/types'
+import type { EndReason, Equipment, Experience, Goal, HandCard, PetColor, SessionSettings, SessionStatus } from '../domain/types'
 import type { LocalProfile, LocalSession, LocalSet, LocalSoreness, PocketGainsDB, SyncMeta } from './db'
 import type { Remote, RemoteTable, Row } from './remote'
 
@@ -7,11 +7,12 @@ import type { Remote, RemoteTable, Row } from './remote'
 
 const profileToRow = (p: LocalProfile): Row => ({
   goal: p.goal, experience: p.experience, onboarded_at: p.onboardedAt, equipment: p.equipment,
-  pet_name: p.petName, timezone: p.timezone, updated_at: p.updatedAt,
+  pet_name: p.petName, pet_color: p.petColor, timezone: p.timezone, updated_at: p.updatedAt,
 })
 const profileFromRow = (r: Row): LocalProfile => ({
   id: 'me', goal: r.goal as Goal, experience: r.experience as Experience, onboardedAt: iso(r.onboarded_at),
-  equipment: r.equipment as Equipment[], petName: r.pet_name as string, timezone: r.timezone as string,
+  equipment: r.equipment as Equipment[], petName: r.pet_name as string,
+  petColor: (r.pet_color as PetColor | undefined) ?? 'mint', timezone: r.timezone as string,
   dirty: 0, updatedAt: iso(r.updated_at),
 })
 
