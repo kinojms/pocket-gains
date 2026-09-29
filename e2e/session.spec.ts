@@ -51,7 +51,7 @@ test('reloading mid-session resumes it; ending early as too hard eases the next 
       page.evaluate(
         () =>
           new Promise<string | undefined>((resolve) => {
-            const open = indexedDB.open('lock-in')
+            const open = indexedDB.open('pocket-gains')
             open.onsuccess = () => {
               const get = open.result.transaction('kv').objectStore('kv').get('activeSession')
               get.onsuccess = () => {
@@ -78,10 +78,10 @@ test('reloading mid-session resumes it; ending early as too hard eases the next 
   await expect(page.getByRole('status', { name: 'Sets' })).toHaveText('1')
 })
 
-test('manifest installs the app under /lock_in/', async ({ request }) => {
+test('manifest installs the app under /pocket-gains/', async ({ request }) => {
   const res = await request.get('manifest.webmanifest')
   expect(res.ok()).toBe(true)
   const manifest = await res.json()
-  expect(manifest.start_url).toBe('/lock_in/')
-  expect(manifest.scope).toBe('/lock_in/')
+  expect(manifest.start_url).toBe('/pocket-gains/')
+  expect(manifest.scope).toBe('/pocket-gains/')
 })

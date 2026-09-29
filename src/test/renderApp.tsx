@@ -1,15 +1,15 @@
 import { render } from '@testing-library/react'
 import { RouterProvider, createMemoryRouter, type RouteObject } from 'react-router'
 import { AppDataProvider } from '../data/AppData'
-import { LockInDB } from '../data/db'
+import { PocketGainsDB } from '../data/db'
 
-export async function makeTestDb(seed?: (db: LockInDB) => Promise<void>): Promise<LockInDB> {
-  const db = new LockInDB(`test-${crypto.randomUUID()}`)
+export async function makeTestDb(seed?: (db: PocketGainsDB) => Promise<void>): Promise<PocketGainsDB> {
+  const db = new PocketGainsDB(`test-${crypto.randomUUID()}`)
   if (seed) await seed(db)
   return db
 }
 
-export function renderRoutes(db: LockInDB, routes: RouteObject[], initialEntries: string[]) {
+export function renderRoutes(db: PocketGainsDB, routes: RouteObject[], initialEntries: string[]) {
   const router = createMemoryRouter(routes, { initialEntries })
   render(
     <AppDataProvider database={db}>

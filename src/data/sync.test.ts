@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { makeProfile, makeSession } from '../domain/testFixtures'
-import { LockInDB } from './db'
+import { PocketGainsDB } from './db'
 import type { Remote, RemoteTable, Row } from './remote'
 import { addSetLogs, countDirty, createSession, loadHistory, saveProfile, updateSession } from './repo'
 import { pullAll, pushDirty } from './sync'
@@ -24,10 +24,10 @@ class FakeRemote implements Remote {
   }
 }
 
-let db: LockInDB
+let db: PocketGainsDB
 let remote: FakeRemote
 beforeEach(async () => {
-  db = new LockInDB(`test-${crypto.randomUUID()}`)
+  db = new PocketGainsDB(`test-${crypto.randomUUID()}`)
   remote = new FakeRemote()
   await saveProfile(db, makeProfile())
   await createSession(db, makeSession({ id: '11111111-1111-4111-8111-111111111111' }))
@@ -80,7 +80,7 @@ describe('pushDirty', () => {
 describe('pullAll', () => {
   it('restores everything into an empty device', async () => {
     await pushDirty(db, remote)
-    const fresh = new LockInDB(`test-${crypto.randomUUID()}`)
+    const fresh = new PocketGainsDB(`test-${crypto.randomUUID()}`)
     await pullAll(fresh, remote)
     expect(await loadHistory(fresh)).toEqual(await loadHistory(db))
     expect(await countDirty(fresh)).toBe(0)

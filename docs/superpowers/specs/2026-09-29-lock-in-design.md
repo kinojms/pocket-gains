@@ -1,4 +1,4 @@
-# Lock In — Design Spec
+# Pocket Gains — Design Spec
 
 **Date:** 2026-09-29
 **Status:** Draft, awaiting review
@@ -8,7 +8,7 @@
 
 A personal home-workout app that fixes one problem: **inconsistency**. The user trains "whenever they feel like it", doubts whether they're doing things right, gets discouraged (e.g. told "pushups won't change anything"), and stops.
 
-Lock In addresses this with:
+Pocket Gains addresses this with:
 
 - **Confidence** — every exercise shows correct form, fits the user's goal, and progresses over time instead of repeating the same thing forever. Defaults are grounded in published training research, with sources visible.
 - **Motivation** — a deckbuilder game layer (exercise cards, unlockable variations) and a pixel-art pet that grows with the user's real training.
@@ -49,7 +49,7 @@ Each deck also includes secondary muscles. The **recommended weekly plan rotates
 - **Backend:** Supabase — Auth (single user), Postgres with Row Level Security, Edge Function + `pg_cron` for Web Push reminders.
 - **Hosting:** frontend on **GitHub Pages**, deployed by a GitHub Actions workflow on push to `main`. Supabase hosts itself. HTTPS is required for PWA install, service workers and push, so the app must be hosted rather than run only locally.
   - **Public repo** (free-tier Pages). Only public-safe config is committed (Supabase URL + anon key, VAPID public key). The Supabase service-role key and VAPID private key live only in Supabase / GitHub Actions secrets. Data protection relies on RLS.
-  - **Subpath:** site is served at `https://<user>.github.io/lock_in/` — Vite `base`, PWA manifest `start_url` and `scope` are set to `/lock_in/`.
+  - **Subpath:** site is served at `https://<user>.github.io/pocket-gains/` — Vite `base`, PWA manifest `start_url` and `scope` are set to `/pocket-gains/`.
   - **Routing:** hash routing (`/#/progress`) so deep links and refreshes work without server rewrites.
   - **No preview deploys:** branches are tested locally (Vite dev server, reachable from the phone on the home network). Plain-HTTP LAN access is not a secure context, so install/offline/push features are tested on the deployed Pages site (or via an HTTPS tunnel) rather than over the LAN.
 

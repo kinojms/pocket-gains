@@ -3,12 +3,12 @@ import userEvent from '@testing-library/user-event'
 import { RouterProvider, createMemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
 import { AppDataProvider } from '../data/AppData'
-import { LockInDB } from '../data/db'
+import { PocketGainsDB } from '../data/db'
 import { getProfile } from '../data/repo'
 import { OnboardingScreen } from './OnboardingScreen'
 
 function setup() {
-  const db = new LockInDB(`test-${crypto.randomUUID()}`)
+  const db = new PocketGainsDB(`test-${crypto.randomUUID()}`)
   const router = createMemoryRouter(
     [{ path: '/onboarding', element: <OnboardingScreen /> }, { path: '/', element: <p>HOME</p> }],
     { initialEntries: ['/onboarding'] },

@@ -1,6 +1,6 @@
 import { RESUME_WINDOW_MS, type ActiveSession } from '../domain/session'
 import type { History, Profile, SessionRecord, SetLog, SetLogDraft } from '../domain/types'
-import type { LocalProfile, LockInDB, SyncMeta } from './db'
+import type { LocalProfile, PocketGainsDB, SyncMeta } from './db'
 
 const ACTIVE_KEY = 'activeSession'
 
@@ -29,25 +29,25 @@ function toProfile(row: LocalProfile): Profile {
   }
 }
 
-export async function getProfile(db: LockInDB): Promise<Profile | null> {
+export async function getProfile(db: PocketGainsDB): Promise<Profile | null> {
   const row = await db.profile.get('me')
   return row ? toProfile(row) : null
 }
 
-export async function saveProfile(db: LockInDB, p: Profile): Promise<void> {
+export async function saveProfile(db: PocketGainsDB, p: Profile): Promise<void> {
   await db.profile.put({ ...p, id: 'me', dirty: 1, updatedAt: stamp() })
 }
 
-export async function loadHistory(db: LockInDB): Promise<History> {
+export async function loadHistory(db: PocketGainsDB): Promise<History> {
   const [sessions, sets, soreness] = await Promise.all([db.sessions.toArray(), db.sets.toArray(), db.soreness.toArray()])
   return { sessions: sessions.map(strip), sets: sets.map(strip), soreness: soreness.map(strip) }
 }
 
-export async function createSession(db: LockInDB, rec: SessionRecord): Promise<void> {
+export async function createSession(db: PocketGainsDB, rec: SessionRecord): Promise<void> {
   await db.sessions.put({ ...rec, dirty: 1, updatedAt: stamp() })
 }
 
-export async function updateSession(db: LockInDB, id: string, patch: Partial<Omit<SessionRecord, 'id'>>): Promise<void> {
+export async function updateSession(db: PocketGainsDB, id: string, patch: Partial<Omit<SessionRecord, 'id'>>): Promise<void> {
   await db.transaction('rw', db.sessions, async () => {
     const current = await db.sessions.get(id)
     if (!current) throw new Error(`session ${id} not found`)
@@ -55,32 +55,32 @@ export async function updateSession(db: LockInDB, id: string, patch: Partial<Omi
   })
 }
 
-export async function addSetLogs(db: LockInDB, sessionId: string, drafts: SetLogDraft[], at = new Date()): Promise<SetLog[]> {
+export async function addSetLogs(db: PocketGainsDB, sessionId: string, drafts: SetLogDraft[], at = new Date()): Promise<SetLog[]> {
   const logs: SetLog[] = drafts.map((d) => ({ ...d, id: crypto.randomUUID(), sessionId, loggedAt: at.toISOString() }))
   const updatedAt = stamp()
   await db.sets.bulkPut(logs.map((l) => ({ ...l, dirty: 1 as const, updatedAt })))
   return logs
 }
 
-export async function addSoreness(db: LockInDB, sessionId: string, rating: 1 | 2 | 3, at = new Date()): Promise<void> {
+export async function addSoreness(db: PocketGainsDB, sessionId: string, rating: 1 | 2 | 3, at = new Date()): Promise<void> {
   await db.soreness.put({
     id: crypto.randomUUID(), sessionId, rating, createdAt: at.toISOString(), dirty: 1, updatedAt: stamp(),
   })
 }
 
-export async function saveActive(db: LockInDB, active: ActiveSession | null): Promise<void> {
+export async function saveActive(db: PocketGainsDB, active: ActiveSession | null): Promise<void> {
   if (active === null) await db.kv.delete(ACTIVE_KEY)
   else await db.kv.put({ key: ACTIVE_KEY, value: active })
 }
 
-export async function loadActive(db: LockInDB): Promise<ActiveSession | null> {
+export async function loadActive(db: PocketGainsDB): Promise<ActiveSession | null> {
   const row = await db.kv.get(ACTIVE_KEY)
   return (row?.value as ActiveSession | undefined) ?? null
 }
 
 export type RecoveryResult = 'none' | 'resumable' | 'finalized'
 
-export async function recoverStaleSession(db: LockInDB, now = Date.now()): Promise<RecoveryResult> {
+export async function recoverStaleSession(db: PocketGainsDB, now = Date.now()): Promise<RecoveryResult> {
   const active = await loadActive(db)
   if (!active) return 'none'
   if (active.phase === 'summary') {
@@ -97,14 +97,14 @@ export async function recoverStaleSession(db: LockInDB, now = Date.now()): Promi
   return 'finalized'
 }
 
-export async function countDirty(db: LockInDB): Promise<number> {
+export async function countDirty(db: PocketGainsDB): Promise<number> {
   const counts = await Promise.all(
     [db.profile, db.sessions, db.sets, db.soreness].map((t) => t.where('dirty').equals(1).count()),
   )
   return counts.reduce((a, b) => a + b, 0)
 }
 
-export async function clearAll(db: LockInDB): Promise<void> {
+export async function clearAll(db: PocketGainsDB): Promise<void> {
   await db.transaction('rw', [db.profile, db.sessions, db.sets, db.soreness, db.kv], async () => {
     await Promise.all([db.profile.clear(), db.sessions.clear(), db.sets.clear(), db.soreness.clear(), db.kv.clear()])
   })

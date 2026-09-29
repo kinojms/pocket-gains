@@ -16,14 +16,14 @@ export interface KvRow {
   value: unknown
 }
 
-export class LockInDB extends Dexie {
+export class PocketGainsDB extends Dexie {
   declare profile: Table<LocalProfile, string>
   declare sessions: Table<LocalSession, string>
   declare sets: Table<LocalSet, string>
   declare soreness: Table<LocalSoreness, string>
   declare kv: Table<KvRow, string>
 
-  constructor(name = 'lock-in') {
+  constructor(name = 'pocket-gains') {
     super(name)
     this.version(1).stores({
       profile: 'id, dirty',
@@ -35,4 +35,4 @@ export class LockInDB extends Dexie {
   }
 }
 
-export const db = new LockInDB()
+export const db = new PocketGainsDB()

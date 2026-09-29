@@ -1,6 +1,6 @@
 import type { Table } from 'dexie'
 import type { EndReason, Experience, Goal, HandCard, SessionSettings, SessionStatus, Equipment } from '../domain/types'
-import type { LocalProfile, LocalSession, LocalSet, LocalSoreness, LockInDB, SyncMeta } from './db'
+import type { LocalProfile, LocalSession, LocalSet, LocalSoreness, PocketGainsDB, SyncMeta } from './db'
 import type { Remote, RemoteTable, Row } from './remote'
 
 // ---- mapping: local camelCase <-> remote snake_case ----
@@ -68,7 +68,7 @@ async function pushTable<T extends SyncMeta & { id: string }>(
 }
 
 /** Pushes in foreign-key order. Throws on the first failing table; everything unsent stays dirty. */
-export async function pushDirty(db: LockInDB, remote: Remote): Promise<number> {
+export async function pushDirty(db: PocketGainsDB, remote: Remote): Promise<number> {
   let n = 0
   n += await pushTable(db.profile, 'profile', profileToRow, remote)
   n += await pushTable(db.sessions, 'session', sessionToRow, remote)
@@ -91,7 +91,7 @@ async function pullTable<T extends SyncMeta & { id: string }>(
   })
 }
 
-export async function pullAll(db: LockInDB, remote: Remote): Promise<void> {
+export async function pullAll(db: PocketGainsDB, remote: Remote): Promise<void> {
   await pullTable(db.profile, 'profile', profileFromRow, remote)
   await pullTable(db.sessions, 'session', sessionFromRow, remote)
   await pullTable(db.sets, 'set_log', setFromRow, remote)
@@ -100,7 +100,7 @@ export async function pullAll(db: LockInDB, remote: Remote): Promise<void> {
 
 // ---- background syncer ----
 
-export function createSyncer(db: LockInDB, remote: Remote, onSynced: () => void): { syncNow(): Promise<void> } {
+export function createSyncer(db: PocketGainsDB, remote: Remote, onSynced: () => void): { syncNow(): Promise<void> } {
   let running: Promise<void> | null = null
   return {
     syncNow() {

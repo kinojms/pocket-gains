@@ -6,12 +6,12 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   use: {
     ...devices['Pixel 7'],
-    baseURL: 'http://localhost:4173/lock_in/',
+    baseURL: 'http://localhost:4173/pocket-gains/',
     trace: 'on-first-retry',
   },
   webServer: {
     command: 'npm run build && npx vite preview --port 4173 --strictPort',
-    url: 'http://localhost:4173/lock_in/',
+    url: 'http://localhost:4173/pocket-gains/',
     reuseExistingServer: !process.env.CI,
     // Empty values force local mode even if a developer has .env.local (Vite never overrides existing env vars).
     env: { VITE_SUPABASE_URL: '', VITE_SUPABASE_ANON_KEY: '' },

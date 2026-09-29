@@ -23,7 +23,7 @@ export function LoginScreen() {
 
   return (
     <form className="screen full" onSubmit={submit}>
-      <h1>Lock In</h1>
+      <h1>Pocket Gains</h1>
       <p className="muted">Sign in to sync your training.</p>
       <label className="stack">
         <span className="label">Email</span>

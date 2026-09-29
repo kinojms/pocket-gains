@@ -37,7 +37,7 @@ export function OnboardingScreen() {
     <main className="screen full">
       {step === 0 && (
         <section className="stack">
-          <h1>Welcome to Lock In</h1>
+          <h1>Welcome to Pocket Gains</h1>
           <p>Each workout is a hand of exercise cards, built on published training research, with a pixel buddy that grows as you train.</p>
           <div className="panel stack">
             <strong>Before we start</strong>

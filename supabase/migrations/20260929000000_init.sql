@@ -1,4 +1,4 @@
--- Lock In M1 schema. Single owner per row; RLS restricts every table to auth.uid().
+-- Pocket Gains M1 schema. Single owner per row; RLS restricts every table to auth.uid().
 
 create table public.profile (
   user_id uuid primary key default auth.uid() references auth.users on delete cascade,

@@ -4,18 +4,18 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  base: '/lock_in/',
+  base: '/pocket-gains/',
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'exercises/*.jpg'],
       manifest: {
-        name: 'Lock In',
-        short_name: 'Lock In',
+        name: 'Pocket Gains',
+        short_name: 'Pocket Gains',
         description: 'Deckbuilder home workouts with a pixel pet that grows with you.',
-        start_url: '/lock_in/',
-        scope: '/lock_in/',
+        start_url: '/pocket-gains/',
+        scope: '/pocket-gains/',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#1e2433',

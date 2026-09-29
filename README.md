@@ -1,11 +1,11 @@
-# Lock In
+# Pocket Gains
 
 Deckbuilder home workouts with a pixel pet that grows with you. Installable PWA; data syncs to Supabase.
 
 ## Develop
 
     npm install
-    npm run dev        # http://localhost:5173/lock_in/ (local mode unless .env.local exists)
+    npm run dev        # http://localhost:5173/pocket-gains/ (local mode unless .env.local exists)
     npm test           # unit + component tests
     npm run e2e        # Playwright, always local mode
 
@@ -20,11 +20,11 @@ Deckbuilder home workouts with a pixel pet that grows with you. Installable PWA;
 5. Project Settings → API: copy the **Project URL** and the **anon / publishable key**.
 
 ### GitHub Pages
-1. The repository must be named exactly `lock_in` (the app is served from `/lock_in/`).
+1. The repository must be named exactly `pocket-gains` (the app is served from `/pocket-gains/`).
 2. Settings → Pages → Source: **GitHub Actions**.
 3. Settings → Secrets and variables → Actions → **Variables**: add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
    Never add the service-role key anywhere in this repo.
-4. Push to `main`. The Deploy workflow publishes `https://<you>.github.io/lock_in/`.
+4. Push to `main`. The Deploy workflow publishes `https://<you>.github.io/pocket-gains/`.
 
 ### Local cloud mode
 Copy `.env.example` to `.env.local` and fill in the two values.

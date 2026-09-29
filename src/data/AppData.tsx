@@ -2,14 +2,14 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { ActiveSession } from '../domain/session'
 import { EMPTY_HISTORY, type History, type Profile } from '../domain/types'
 import type { PullState } from '../gate'
-import { db as defaultDb, type LockInDB } from './db'
+import { db as defaultDb, type PocketGainsDB } from './db'
 import { supabaseRemote } from './remote'
 import { clearAll, countDirty, getProfile, loadActive, loadHistory, recoverStaleSession } from './repo'
 import { supabase } from './supabase'
 import { createSyncer, pullAll } from './sync'
 
 export interface AppData {
-  db: LockInDB
+  db: PocketGainsDB
   ready: boolean
   mode: 'local' | 'cloud'
   authChecked: boolean
@@ -32,7 +32,7 @@ export interface AppData {
 
 const Ctx = createContext<AppData | null>(null)
 
-const DEVICE_FLAG = 'lockin.signedInOnDevice'
+const DEVICE_FLAG = 'pocketgains.signedInOnDevice'
 
 function readDeviceFlag(): boolean {
   try {
@@ -59,7 +59,7 @@ interface Loaded {
   dirtyCount: number
 }
 
-export function AppDataProvider({ children, database = defaultDb }: { children: ReactNode; database?: LockInDB }) {
+export function AppDataProvider({ children, database = defaultDb }: { children: ReactNode; database?: PocketGainsDB }) {
   const [loaded, setLoaded] = useState<Loaded>({ ready: false, profile: null, history: EMPTY_HISTORY, active: null, dirtyCount: 0 })
   const [authChecked, setAuthChecked] = useState(supabase === null)
   const [signedIn, setSignedIn] = useState(supabase === null)

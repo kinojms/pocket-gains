@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { startSession } from '../domain/session'
 import { makeProfile, makeSession } from '../domain/testFixtures'
-import { LockInDB } from './db'
+import { PocketGainsDB } from './db'
 import {
   addSetLogs, addSoreness, countDirty, createSession, getProfile, loadActive, loadHistory,
   recoverStaleSession, saveActive, saveProfile, updateSession,
 } from './repo'
 
-let db: LockInDB
+let db: PocketGainsDB
 beforeEach(() => {
-  db = new LockInDB(`test-${crypto.randomUUID()}`)
+  db = new PocketGainsDB(`test-${crypto.randomUUID()}`)
 })
 
 const HOUR = 3_600_000
