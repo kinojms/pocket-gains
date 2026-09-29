@@ -13,7 +13,7 @@
     "typecheck": "tsc -b",
     "e2e": "playwright test",
     "images": "node scripts/fetch-exercise-images.mjs",
-    "icons": "pwa-assets-generator --preset minimal-2023 public/icon.svg"
+    "icons": "pwa-assets-generator"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
