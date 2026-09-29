@@ -89,3 +89,8 @@ select { padding: 10px; border-radius: var(--radius); background: var(--ink); co
 .demo img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
 .topbar { display: flex; justify-content: space-between; align-items: center; }
 .end-btn { min-height: 40px; padding: 6px 12px; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.card-grid .tcg-art { height: 96px; }
+.card-grid .tcg-stats { flex-direction: column; font-size: 12px; }
+.unavailable { opacity: 0.45; }
+.stat { font-size: 28px; }
