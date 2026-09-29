@@ -20,6 +20,7 @@
 - Never commit secrets: the Supabase **secret** key, the VAPID **private** key and the Vault values are set only through the Supabase CLI or dashboard. The VAPID **public** key is public (repo variable plus `.env.local`).
 - Reminders are opt-in, cloud mode only, and sent **at most once per day**, plus an optional morning nudge.
 - Tests run in local mode (no Supabase). Anything that needs a real backend is covered by a pure-function test plus an on-device check.
+- **Work on a branch (`m2-consistency`); nothing reaches `main` until the M2 migration has run.** From Task 9 on, the app syncs `weekly_plan` and the reminder columns. On the old schema the profile push fails, which stalls *all* syncing, and pulls fail on the missing table, so a new device would show "Couldn't restore your data". Every push to `main` deploys, so the migration must come first.
 
 ### Decisions beyond the spec (reviewers: intended)
 
@@ -34,6 +35,7 @@
 | Morning nudge | Sent at 09:00–12:00 local if **yesterday was a reminder day with no session**, and the user hasn't trained yet today | Server-side approximation of "after a shield is used"; the server can't compute shields |
 | Reminder window | Reminder is due from `reminderTime` until 23:00 local, once per day, skipped if a session already started that day | Survives missed cron runs; never nags after training |
 | App updates | `registerType: 'prompt'` with an "Update" banner shown only on the tab screens | M1 minor: auto-update could reload mid-workout |
+| Install/permission guidance | Given in Profile → Reminders at the moment you switch reminders on (unsupported → "install to your home screen first"; blocked → how to allow notifications), not during onboarding | Reminders are opt-in and need a signed-in, installed app; guidance at the point of use is clearer |
 | Push subscription writes | `push_subscription` is written directly to Supabase (online) when reminders are switched on, not through the offline sync queue | A subscription is useless offline; simpler |
 
 ## Review Focus
@@ -497,19 +499,23 @@ git commit -m "feat(progress): prompt to sign in again when sync has no live ses
 - [ ] **Step 1: Install**
 
 ```bash
-npm install -D workbox-precaching workbox-core
+npm install -D workbox-precaching workbox-routing workbox-core
 ```
 
 - [ ] **Step 2: Create `src/sw.ts`**
 
 ```ts
 /// <reference lib="webworker" />
-import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching'
+import { cleanupOutdatedCaches, createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
+import { NavigationRoute, registerRoute } from 'workbox-routing'
 
 declare const self: ServiceWorkerGlobalScope
 
 cleanupOutdatedCaches()
 precacheAndRoute(self.__WB_MANIFEST)
+// Offline launches: every navigation inside the scope gets the cached app shell
+// (generateSW did this for us; injectManifest does not).
+registerRoute(new NavigationRoute(createHandlerBoundToURL('index.html')))
 
 // The page asks the waiting worker to take over when the user taps "Update".
 self.addEventListener('message', (event) => {
@@ -1387,6 +1393,17 @@ alter table public.reminder_state enable row level security;
 create extension if not exists pg_cron with schema pg_catalog;
 create extension if not exists pg_net with schema extensions;
 ```
+
+- [ ] **Step 1b: Ask the user to run the migration now**
+
+Ask the user to paste `20261001000000_m2.sql` into the Supabase SQL Editor and run it, then confirm. This is additive (new columns with defaults, new tables), so the live M1 app keeps working. Don't merge or push to `main` before they confirm. A quick check you can run afterwards (the publishable key is public):
+
+```bash
+curl -s -o /dev/null -w "%{http_code}
+" "https://<project-ref>.supabase.co/rest/v1/weekly_plan?select=id&limit=1" -H "apikey: <publishable key>"
+```
+
+Expected: `200`.
 
 - [ ] **Step 2: Extend the types and fixtures**
 
@@ -2420,9 +2437,26 @@ VITE_VAPID_PUBLIC_KEY=
 
 In `.github/workflows/deploy.yml`, add `VITE_VAPID_PUBLIC_KEY: ${{ vars.VITE_VAPID_PUBLIC_KEY }}` to the build step's `env`.
 
-- [ ] **Step 7: Run** `npx vitest run && npm run typecheck && npm run lint` → PASS.
+- [ ] **Step 7: Point the 😴 end-early suggestion at the reminder time** (M1 deferred this to M2)
 
-- [ ] **Step 8: Commit**
+In `src/domain/history.test.ts`, add to the `endEarlySuggestion` describe:
+
+```ts
+  it('suggests moving the reminder earlier after repeated tired sessions', () => {
+    const h = makeHistory({ sessions: [partial(1, 'tired'), partial(2, 'tired'), partial(3, 'tired')] })
+    expect(endEarlySuggestion(h)?.message).toMatch(/reminder earlier \(Profile → Reminders\)/)
+  })
+```
+
+Run it and watch it fail, then change the `tired` entry of `SUGGESTIONS` in `src/domain/history.ts` to:
+
+```ts
+  tired: 'Feeling tired a lot? Try moving your reminder earlier (Profile → Reminders), and aim for 7+ hours of sleep.',
+```
+
+- [ ] **Step 8: Run** `npx vitest run && npm run typecheck && npm run lint` → PASS.
+
+- [ ] **Step 9: Commit**
 
 ```bash
 git add -A
@@ -2778,7 +2812,7 @@ Add a "Reminders (one-time setup)" section:
 ```markdown
 ## Reminders (one-time setup)
 
-1. Run the new migration `supabase/migrations/20261001000000_m2.sql` in the SQL Editor.
+1. Run `supabase/migrations/20261001000000_m2.sql` in the SQL Editor **before** deploying the M2 app (see Task 9).
 2. Log in to the CLIs: `npx supabase login` (and `gh auth login` if needed).
 3. Keys: `node scripts/setup-vapid.mjs <project-ref> <your-email>`.
    This stores the private key only in Supabase secrets.
@@ -2815,15 +2849,16 @@ git commit -m "chore(reminders): VAPID setup script and reminder setup docs"
 
 README steps 1–5 create secrets and change the user's Supabase project, which are outward-facing and security-sensitive actions. Ask the user to run them, or to explicitly approve each one. Step 3 is safe for an agent to run once the user has logged in to the CLIs, because it never prints the private key. Push to `main` only with the user's go-ahead.
 
-- [ ] **Step 4: Check the function by hand**
+- [ ] **Step 4: Check the schedule and the function without handling the secret key**
 
-With the user's permission, run a manual call using the secret key (the user can run it with `!` so the key stays out of the transcript):
+The secret key must never appear in this conversation. Commands the user runs with `!` show up in it too. Ask the user to run these in the Supabase **SQL Editor** after the first 15-minute tick and share the output:
 
-```bash
-curl -s -X POST "https://<project-ref>.supabase.co/functions/v1/send-reminders" -H "apikey: <secret key>" -H "Authorization: Bearer <secret key>"
+```sql
+select jobname, status, return_message, start_time from cron.job_run_details order by start_time desc limit 5;
+select status_code, content from net._http_response order by created desc limit 5;
 ```
 
-Expected: `{"due":0,"sent":0}` (or `due: 1` if a reminder is due). A 401 means the auth header or deploy flag is wrong.
+Expected: recent `succeeded` cron runs, and HTTP 200 responses with `{"due":…,"sent":…}`. A 401 means the Vault `secret_key` value or the `--no-verify-jwt` deploy flag is wrong. Remind the user to paste the secret key only into their own Vault SQL, never into chat.
 
 - [ ] **Step 5: On-device acceptance (with the user)**
 
@@ -2832,7 +2867,8 @@ Expected: `{"due":0,"sent":0}` (or `due: 1` if a reminder is due). A 401 means t
 3. Home shows 🔥 and the shield; "Edit my week" changes Home's deck for that weekday from today on.
 4. Progress shows the calendar with today marked and your trained days ✅; tapping an exercise shows its history.
 5. Turn reminders off. The subscription row disappears from `push_subscription` in the Supabase Table Editor.
-6. A new deploy shows the "A new version…" banner on a tab screen, never during a workout.
+6. A new deploy shows the "A new version…" banner on a tab screen, never during a workout. The **first** update after this release may need the app fully closed (swipe it away) and reopened once, because the old auto-updating worker hands over to the new prompt-based one.
+7. Offline launch still works: turn on airplane mode, open the installed app, and Home loads with your pet and streak.
 
 ---
 
@@ -2842,7 +2878,8 @@ Expected: `{"due":0,"sent":0}` (or `due: 1` if a reminder is due). A 401 means t
 |---|---|---|
 | §2 M2 | Weekly plan (recommended, editable) | 6, 9, 10, 12 |
 | §2 M2, §8 | Streaks: scheduled days only; warm-up + ≥ 1 completed card; 1 shield per ISO week; second miss resets | 7, 11 |
-| §2 M2, §9 | Web Push reminders; cron every 15 min; ≤ 1/day; pet voice; next-morning nudge; install/permission guidance | 5, 14–16 |
+| §2 M2, §9 | Web Push reminders; cron every 15 min; ≤ 1/day; pet voice; next-morning nudge; install/permission guidance (in Profile, see decisions table) | 5, 14–16 |
+| §6 / M1 deviation | 😴 repeated end-early → suggest moving the reminder time | 14 |
 | §2 M2 | Progress tab: calendar and per-exercise history | 13 |
 | §10 | Resume/finalize robustness; sync retry correctness; update without interrupting workouts | 1–3, 5 |
 | M1 review | 8 deferred minors: write-chain catch (1), startup recovery (2), paging order (3), pull/push race (3), sign-in-to-sync (4), atomic set+resume (1), 12 h finalize on resume + orphans (2), update prompt (5) | 1–5 |
