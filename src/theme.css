@@ -64,3 +64,19 @@ input[type='text'], input[type='email'], input[type='password'] { width: 100%; p
 .pet-stage { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px 0 8px; background: radial-gradient(circle at 50% 60%, var(--surface-2), var(--bg) 70%); border-radius: var(--radius); }
 .center-text { text-align: center; text-decoration: none; display: block; }
 a.choice { text-decoration: none; }
+.round { width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 50%; font-size: 20px; }
+.stepper-value { min-width: 36px; text-align: center; font-size: 20px; font-weight: 700; }
+.sources summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+.sources ul { font-size: 12px; color: var(--muted); padding-left: 18px; }
+select { padding: 10px; border-radius: var(--radius); background: var(--ink); color: var(--text); border: 1px solid var(--surface-2); }
+
+.tcg { background: linear-gradient(160deg, var(--gold-1), var(--gold-2)); border-radius: 12px; padding: 6px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4); }
+.tcg-inner { background: var(--parchment); color: var(--parchment-ink); border-radius: 8px; overflow: hidden; }
+.tcg-head { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; font-weight: 800; }
+.tcg-stars { color: #c0392b; font-size: 13px; }
+.tcg-art { margin: 0 8px; height: 140px; border: 3px solid #d9a441; background: var(--surface-2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.tcg-art img { width: 100%; height: 100%; object-fit: cover; }
+.tcg-type { font-size: 11px; font-style: italic; color: #8a6d3b; text-align: center; padding: 4px 8px; }
+.tcg-stats { padding: 6px 10px; font-size: 13px; border-top: 1px solid #ecd9a8; display: flex; justify-content: space-between; }
+.tcg-foot { padding: 8px 10px; border-top: 1px solid #ecd9a8; }
+.tcg-foot .btn { width: 100%; min-height: 40px; padding: 8px; }
