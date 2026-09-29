@@ -51,7 +51,7 @@ Each deck also includes secondary muscles. The **recommended weekly plan rotates
   - **Public repo** (free-tier Pages). Only public-safe config is committed (Supabase URL + anon key, VAPID public key). The Supabase service-role key and VAPID private key live only in Supabase / GitHub Actions secrets. Data protection relies on RLS.
   - **Subpath:** site is served at `https://<user>.github.io/lock_in/` — Vite `base`, PWA manifest `start_url` and `scope` are set to `/lock_in/`.
   - **Routing:** hash routing (`/#/progress`) so deep links and refreshes work without server rewrites.
-  - **No preview deploys:** branches are tested locally (Vite dev server, reachable from the phone on the home network).
+  - **No preview deploys:** branches are tested locally (Vite dev server, reachable from the phone on the home network). Plain-HTTP LAN access is not a secure context, so install/offline/push features are tested on the deployed Pages site (or via an HTTPS tunnel) rather than over the LAN.
 
 ```
 Phone (PWA)
