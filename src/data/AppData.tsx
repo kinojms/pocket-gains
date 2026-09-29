@@ -150,8 +150,10 @@ export function AppDataProvider({ children, database = defaultDb }: { children: 
     writeDeviceFlag(false)
     setDeviceSignedIn(false)
     await clearAll(database)
-    await refresh()
-  }, [database, refresh])
+    // Start clean: resets the first-download state and abandons any download still in flight,
+    // so the next sign-in waits for the user's data instead of showing onboarding.
+    location.reload()
+  }, [database])
 
   const value: AppData = {
     db: database,

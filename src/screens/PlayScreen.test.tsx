@@ -67,3 +67,22 @@ describe('PlayScreen', () => {
     expect(await screen.findByText('HOME')).toBeInTheDocument()
   })
 })
+
+describe('PlayScreen resume', () => {
+  it('leaving and resuming in the same app session continues from the saved state, not the start', async () => {
+    const db = await seeded()
+    const user = userEvent.setup()
+    const router = renderRoutes(db, routes, ['/session/play'])
+    await user.click(await screen.findByRole('button', { name: /Start first card/ }))
+    await user.click(screen.getByRole('button', { name: /start set 1/i }))
+    await user.click(screen.getByRole('button', { name: /Log set/ }))
+    await screen.findByRole('timer', { name: /Rest/ })
+    await waitFor(async () => expect((await loadActive(db))?.phase).toBe('rest'))
+
+    await router.navigate('/')
+    await screen.findByText('HOME')
+    await router.navigate('/session/play')
+    expect(await screen.findByRole('timer', { name: /Rest/ })).toBeInTheDocument()
+    expect((await loadHistory(db)).sets).toHaveLength(1)
+  })
+})

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Navigate, useNavigate } from 'react-router'
 import { content } from '../content'
 import { useAppData } from '../data/AppData'
-import { addSetLogs, saveActive, updateSession } from '../data/repo'
+import { addSetLogs, loadActive, saveActive, updateSession } from '../data/repo'
 import { lastWeightFor, tutorialMode } from '../domain/history'
 import { remainingMs, repRangeFor, restSecFor, step, type ActiveSession, type SessionAction } from '../domain/session'
 import { useNow } from '../hooks/useNow'
@@ -14,15 +14,23 @@ import { TutorialView } from './play/TutorialView'
 import { WarmupView } from './play/WarmupView'
 
 export function PlayScreen() {
-  const { ready, active } = useAppData()
-  // Hold on to the session this screen opened with: when it ends, `active` is cleared
-  // while we are navigating to the summary, and that must not bounce us home.
-  const [session, setSession] = useState<ActiveSession | null>(null)
-  if (ready && active && session === null) setSession(active)
-  if (!ready) return null
-  const current = session ?? active
-  if (!current) return <Navigate to="/" replace />
-  return <Player key={current.sessionId} initial={current} />
+  const { db, ready } = useAppData()
+  // Read the saved state fresh from IndexedDB: the context copy is only refreshed at start/end,
+  // so resuming from it would rewind the workout. Locked for this mount: when the session ends
+  // `active` is cleared while we navigate to the summary, which must not bounce us home.
+  const [session, setSession] = useState<ActiveSession | null | undefined>(undefined)
+  useEffect(() => {
+    let cancelled = false
+    void loadActive(db).then((a) => {
+      if (!cancelled) setSession(a)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [db])
+  if (!ready || session === undefined) return null
+  if (!session) return <Navigate to="/" replace />
+  return <Player key={session.sessionId} initial={session} />
 }
 
 function Player({ initial }: { initial: ActiveSession }) {
