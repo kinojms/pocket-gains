@@ -82,6 +82,7 @@ test('manifest installs the app under /pocket-gains/', async ({ request }) => {
   const res = await request.get('manifest.webmanifest')
   expect(res.ok()).toBe(true)
   const manifest = await res.json()
+  expect(manifest.id).toBe('/pocket-gains/')
   expect(manifest.start_url).toBe('/pocket-gains/')
   expect(manifest.scope).toBe('/pocket-gains/')
 })

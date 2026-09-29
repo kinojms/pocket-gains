@@ -11,9 +11,10 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'exercises/*.jpg'],
       manifest: {
+        id: '/pocket-gains/',
         name: 'Pocket Gains',
         short_name: 'Pocket Gains',
-        description: 'Deckbuilder home workouts with a pixel pet that grows with you.',
+        description: 'Deckbuilder home workouts with a cute blob pet that grows with you.',
         start_url: '/pocket-gains/',
         scope: '/pocket-gains/',
         display: 'standalone',
