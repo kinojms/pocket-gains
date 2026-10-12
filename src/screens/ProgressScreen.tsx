@@ -1,22 +1,26 @@
+import { Link } from 'react-router'
 import { content } from '../content'
 import { useAppData } from '../data/AppData'
 import { recentSessions } from '../domain/history'
 import { countsForXp } from '../domain/pet'
 
-export function syncStatusText(mode: 'local' | 'cloud', dirtyCount: number): string {
+export function syncStatusText(mode: 'local' | 'cloud', dirtyCount: number, needsSignIn = false): string {
   if (mode === 'local') return 'Local mode: your data stays on this device.'
+  if (needsSignIn) return '● Not syncing: sign in again to back up your training'
   if (dirtyCount > 0) return `● Not synced yet (${dirtyCount} change${dirtyCount === 1 ? '' : 's'})`
   return '✓ All changes synced'
 }
 
 export function ProgressScreen() {
-  const { mode, history, dirtyCount } = useAppData()
+  const { mode, history, dirtyCount, authChecked, signedIn } = useAppData()
+  const needsSignIn = mode === 'cloud' && authChecked && !signedIn
   const all = recentSessions(history, Number.POSITIVE_INFINITY)
   const setsDone = history.sets.filter(countsForXp)
   return (
     <main className="screen">
       <h1>Progress</h1>
-      <p className="muted" role="status">{syncStatusText(mode, dirtyCount)}</p>
+      <p className="muted" role="status">{syncStatusText(mode, dirtyCount, needsSignIn)}</p>
+      {needsSignIn && <Link className="btn btn-primary center-text" to="/login">Sign in to sync</Link>}
       <div className="row">
         <div className="panel stack" style={{ flex: 1 }}>
           <span className="label">Sessions</span>

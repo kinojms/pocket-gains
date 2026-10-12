@@ -6,6 +6,10 @@ import { makeTestDb, renderRoutes } from '../test/renderApp'
 import { ProgressScreen, syncStatusText } from './ProgressScreen'
 
 describe('syncStatusText', () => {
+  it('asks to sign in again when cloud sync has no live session', () => {
+    expect(syncStatusText('cloud', 3, true)).toBe('● Not syncing: sign in again to back up your training')
+  })
+
   it('describes local mode, pending changes and synced state', () => {
     expect(syncStatusText('local', 3)).toMatch(/stays on this device/)
     expect(syncStatusText('cloud', 1)).toBe('● Not synced yet (1 change)')
