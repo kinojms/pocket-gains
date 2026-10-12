@@ -7,14 +7,14 @@ Personal home-workout PWA: exercises are trading cards, sessions are dealt "hand
 - **Backend:** Supabase (auth, Postgres with row-level security)
 - **Design spec:** [`docs/superpowers/specs/2026-09-29-lock-in-design.md`](docs/superpowers/specs/2026-09-29-lock-in-design.md)
 
-_Last updated: 2026-09-30_
+_Last updated: 2026-10-12_
 
 ## Status at a glance
 
 | Milestone | What it covers | Status |
 |---|---|---|
 | **M1: Playable loop + basic pet** | Onboarding, decks, dealt hands, workout player, summary, XP/levels, sync | ✅ Done, deployed, checked on-device |
-| **M2: Consistency** | Weekly plan, streaks + shield, reminders, progress calendar and exercise history, plus 8 robustness fixes | 📝 Planned; build starts next session |
+| **M2: Consistency** | Weekly plan, streaks + shield, reminders, progress calendar and exercise history, plus 8 robustness fixes | 🔧 Built on branch `m2-consistency`, reviewed and fixed; waiting on your setup steps before merge |
 | **M3: Progression** | Card levels, upgrade/step-down prompts, unlockable variations, placement test | ⏳ Not started |
 | **M4: Pet as mirror** | Pet body changes with the muscles you train; text milestones | ⏳ Not started |
 | **Design pass** | Overall UI/visual polish | ⏳ After the feature milestones (your call: features first) |
@@ -22,11 +22,21 @@ _Last updated: 2026-09-30_
 
 ## Next session
 
-1. **Build M2** from [`docs/superpowers/plans/2026-10-01-pocket-gains-m2.md`](docs/superpowers/plans/2026-10-01-pocket-gains-m2.md) (plan approved). Still to decide: build **Native** (recommended) or **Subagent-driven**.
-2. **Your part:**
-   - **At Task 9:** run `supabase/migrations/20261001000000_m2.sql` in the Supabase SQL Editor **before** anything M2 is pushed to `main`.
-   - **Near the end:** run `npx supabase login`, then create the Vault secrets and the 15-minute cron job in the SQL Editor with your **secret** key. Never paste that key into chat.
-   - **At the end:** an on-device check: a reminder arriving, the streak and calendar, offline launch, and the update banner.
+M2 is built on branch `m2-consistency`: 23 commits, 180 unit tests and 3 browser tests passing. **Nothing is on `main` yet.**
+
+**Your part, in order:**
+1. In the Supabase SQL Editor, run `supabase/migrations/20261001000000_m2.sql`, then `20261002000000_m2_plan_experience.sql`.
+2. Merge `m2-consistency` into `main` (only after step 1; every push to `main` deploys).
+3. Reminders setup (README → "Reminders (one-time setup)"):
+   - `npx supabase login`.
+   - `node scripts/setup-vapid.mjs <project-ref> <email>`.
+   - Deploy `send-reminders`.
+   - Create the Vault secrets and the 15-minute cron job with your **secret** key. Never paste that key into chat.
+4. Check on your phone: a reminder arrives, the streak and calendar look right, offline launch works, the update banner shows, and Profile → "Edit my week" works.
+
+**Deferred to later:**
+- The time zone can't be edited after onboarding (reminders fire at the old local time if you move).
+- Seven minor review items, listed under Known limitations.
 
 ## What exists today (M1)
 
@@ -42,6 +52,25 @@ _Last updated: 2026-09-30_
 - **Quality:** 116 unit/component tests + 3 end-to-end browser tests run in CI on every push.
 
 ## Changelog
+
+### 2026-10-12: M2 built
+- **Robustness:**
+  - A failed save never stalls a workout.
+  - Recovery can't hang startup.
+  - Orphaned sessions are finalized.
+  - Sync pages in a stable order and keeps the newest copy.
+  - "Sign in to sync" shows when your login has expired.
+- **App updates:** an "Update" banner (only on tab screens) instead of an automatic reload. A custom service worker handles push notifications.
+- **Weekly plan:** recommended week (3 days on the on-ramp, 4 at target) and "Edit my week". Plans are dated, so changes never rewrite past days.
+- **Streaks:** scheduled days only, one shield per week, today never breaks the streak. Home shows 🔥 and 🛡️.
+- **Progress:** streak stats, month calendar, and a history page for each exercise with a chart.
+- **Reminders:** Profile → Reminders (once a day max, morning nudge, latest time 22:45), Web Push, and the `send-reminders` Edge Function (pg_cron every 15 min).
+- **Review fixes:**
+  - Editing Experience no longer resets past streak days.
+  - Sign-out removes push.
+  - Each phone can set up its own reminders.
+  - Startup writes wait for the first download.
+  - Notification taps open Pocket Gains, not another app on the same site.
 
 ### 2026-09-30
 - Added this progress file. M2 build scheduled for the next session.
@@ -76,11 +105,19 @@ _Last updated: 2026-09-30_
 
 - **Tutorial videos:** cards link to a YouTube search until you add curated `videoUrl`s in `src/content/exercises.json`.
 - **Leg raise and a few others:** no photo (the pet fallback shows instead).
-- **8 minor robustness items:** scheduled as M2 Tasks 1–5.
+- **Time zone** is set at onboarding and can't be edited yet.
+- **Minor review items (M2):**
+  - The nudge can fire for the day before you joined.
+  - Edge-function bookkeeping isn't hardened (unchecked state write, unpaged reads).
+  - Re-running the VAPID script orphans old subscriptions.
+  - A failed workout save drops that step's sets.
+  - Onboarding day counts as a scheduled day.
+  - Reminder days go stale if the app isn't opened.
+  - Streak maths isn't cached.
 - **UI/visual design:** functional but plain; the design pass comes after the feature milestones.
 
 ## Setup notes
 
-- **Supabase migrations:** run in order in the SQL Editor: `20260929000000_init.sql` ✅, `20260930000000_pet_color.sql` ✅, `20261001000000_m2.sql` (next session).
+- **Supabase migrations:** run in order in the SQL Editor: `20260929000000_init.sql` ✅, `20260930000000_pet_color.sql` ✅, `20261001000000_m2.sql` and `20261002000000_m2_plan_experience.sql` (pending).
 - **Local development:** `npm install`, `npm run dev`. `.env.local` holds the public Supabase URL and key (git-ignored).
 - **Details:** full setup steps are in [`README.md`](README.md).
