@@ -1,11 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { planFor, trainingDays, type PlanSnapshot } from '../domain/plan'
 import type { ActiveSession } from '../domain/session'
 import { EMPTY_HISTORY, type History, type Profile } from '../domain/types'
 import type { PullState } from '../gate'
 import { PetColorContext } from '../ui/petColor'
 import { db as defaultDb, type PocketGainsDB } from './db'
 import { supabaseRemote } from './remote'
-import { clearAll, countDirty, getProfile, loadActive, loadHistory, recoverSessions } from './repo'
+import { clearAll, countDirty, getProfile, loadActive, loadHistory, loadPlans, recoverSessions, saveProfile } from './repo'
 import { supabase } from './supabase'
 import { createSyncer, pullAll } from './sync'
 
@@ -22,6 +23,7 @@ export interface AppData {
   initialPull: PullState
   profile: Profile | null
   history: History
+  plans: PlanSnapshot[]
   active: ActiveSession | null
   dirtyCount: number
   refresh(): Promise<void>
@@ -56,12 +58,13 @@ interface Loaded {
   ready: boolean
   profile: Profile | null
   history: History
+  plans: PlanSnapshot[]
   active: ActiveSession | null
   dirtyCount: number
 }
 
 export function AppDataProvider({ children, database = defaultDb }: { children: ReactNode; database?: PocketGainsDB }) {
-  const [loaded, setLoaded] = useState<Loaded>({ ready: false, profile: null, history: EMPTY_HISTORY, active: null, dirtyCount: 0 })
+  const [loaded, setLoaded] = useState<Loaded>({ ready: false, profile: null, history: EMPTY_HISTORY, plans: [], active: null, dirtyCount: 0 })
   const [authChecked, setAuthChecked] = useState(supabase === null)
   const [signedIn, setSignedIn] = useState(supabase === null)
   const [deviceSignedIn, setDeviceSignedIn] = useState(() => supabase === null || readDeviceFlag())
@@ -75,10 +78,10 @@ export function AppDataProvider({ children, database = defaultDb }: { children: 
   }, [])
 
   const refresh = useCallback(async () => {
-    const [profile, history, active, dirtyCount] = await Promise.all([
-      getProfile(database), loadHistory(database), loadActive(database), countDirty(database),
+    const [profile, history, plans, active, dirtyCount] = await Promise.all([
+      getProfile(database), loadHistory(database), loadPlans(database), loadActive(database), countDirty(database),
     ])
-    setLoaded({ ready: true, profile, history, active, dirtyCount })
+    setLoaded({ ready: true, profile, history, plans, active, dirtyCount })
   }, [database])
 
   const syncer = useMemo(
@@ -148,6 +151,15 @@ export function AppDataProvider({ children, database = defaultDb }: { children: 
     await refresh()
     if (syncer && signedIn) void syncer.syncNow()
   }, [refresh, signedIn, syncer])
+
+  // The reminder server only knows profile.reminderDays; keep it matching the plan in effect today.
+  useEffect(() => {
+    const { profile, history, plans } = loaded
+    if (!profile) return
+    const days = trainingDays(planFor(new Date(), { profile, history, plans }).days)
+    if (days.join() === profile.reminderDays.join()) return
+    void saveProfile(database, { ...profile, reminderDays: days }).then(afterWrite)
+  }, [loaded, database, afterWrite])
 
   const signIn = useCallback(async (email: string, password: string) => {
     if (!supabase) return null

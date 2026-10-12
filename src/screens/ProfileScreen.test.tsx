@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { getProfile, saveProfile } from '../data/repo'
 import { makeProfile } from '../domain/testFixtures'
 import { makeTestDb, renderRoutes } from '../test/renderApp'
@@ -12,6 +12,10 @@ describe('ProfileScreen', () => {
     const db = await makeTestDb((d) => saveProfile(d, original))
     const user = userEvent.setup()
     renderRoutes(db, [{ path: '/profile', element: <ProfileScreen /> }], ['/profile'])
+    // The app keeps reminderDays matching today's plan; the form must not write a stale copy back.
+    await waitFor(async () => expect((await getProfile(db))?.reminderDays).not.toEqual([]))
+    const reminderDays = (await getProfile(db))!.reminderDays
+    const writes = vi.spyOn(db.profile, 'put')
 
     await user.click(await screen.findByRole('button', { name: /Returning after a break/ }))
     await user.click(screen.getByRole('checkbox', { name: /Resistance bands/ }))
@@ -21,10 +25,11 @@ describe('ProfileScreen', () => {
     await user.click(screen.getByRole('radio', { name: 'Sky' }))
     await user.click(screen.getByRole('button', { name: 'Save changes' }))
 
-    await waitFor(async () =>
-      expect(await getProfile(db)).toEqual({ ...original, experience: 'returning', equipment: ['bodyweight', 'band'], petName: 'Tank', petColor: 'sky' }),
-    )
     expect(await screen.findByText('Saved ✓')).toBeInTheDocument()
+    expect(await getProfile(db)).toMatchObject({
+      experience: 'returning', equipment: ['bodyweight', 'band'], petName: 'Tank', petColor: 'sky', onboardedAt: original.onboardedAt, reminderDays,
+    })
+    for (const [row] of writes.mock.calls) expect(row.reminderDays).toEqual(reminderDays)
   })
 
   it('lists the research behind the defaults', async () => {

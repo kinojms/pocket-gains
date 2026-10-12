@@ -14,7 +14,7 @@ export function ProfileScreen() {
 }
 
 function ProfileForm({ initial }: { initial: Profile }) {
-  const { db, mode, dirtyCount, afterWrite, signOut } = useAppData()
+  const { db, mode, dirtyCount, afterWrite, signOut, profile } = useAppData()
   const [draft, setDraft] = useState(initial)
   const [saved, setSaved] = useState(false)
   const edit = (patch: Partial<Profile>) => {
@@ -29,7 +29,15 @@ function ProfileForm({ initial }: { initial: Profile }) {
     })
 
   async function save() {
-    await saveProfile(db, { ...draft, petName: draft.petName.trim() || initial.petName })
+    // Save only what the form edits, on top of the latest profile (reminderDays is kept current by the app).
+    const latest = profile ?? initial
+    await saveProfile(db, {
+      ...latest,
+      experience: draft.experience,
+      equipment: draft.equipment,
+      petName: draft.petName.trim() || initial.petName,
+      petColor: draft.petColor,
+    })
     await afterWrite()
     setSaved(true)
   }
