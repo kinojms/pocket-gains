@@ -6,7 +6,7 @@ import type { PullState } from '../gate'
 import { PetColorContext } from '../ui/petColor'
 import { db as defaultDb, type PocketGainsDB } from './db'
 import { supabaseRemote } from './remote'
-import { clearAll, countDirty, getProfile, loadActive, loadHistory, loadPlans, recoverSessions, saveProfile } from './repo'
+import { clearAll, countDirty, getProfile, loadActive, loadHistory, loadPlans, recoverSessions, setReminderDays } from './repo'
 import { supabase } from './supabase'
 import { createSyncer, pullAll } from './sync'
 
@@ -158,7 +158,9 @@ export function AppDataProvider({ children, database = defaultDb }: { children: 
     if (!profile) return
     const days = trainingDays(planFor(new Date(), { profile, history, plans }).days)
     if (days.join() === profile.reminderDays.join()) return
-    void saveProfile(database, { ...profile, reminderDays: days }).then(afterWrite)
+    void setReminderDays(database, days).then((saved) => {
+      if (saved) void afterWrite()
+    })
   }, [loaded, database, afterWrite])
 
   const signIn = useCallback(async (email: string, password: string) => {

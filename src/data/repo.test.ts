@@ -4,7 +4,7 @@ import { startSession } from '../domain/session'
 import { makeProfile, makeSession } from '../domain/testFixtures'
 import { PocketGainsDB, type LocalProfile } from './db'
 import {
-  addSetLogs, addSoreness, countDirty, createSession, finalizeOrphans, getProfile, loadActive, loadHistory, logSetsAndSaveActive, loadPlans, savePlan,
+  addSetLogs, addSoreness, countDirty, createSession, finalizeOrphans, getProfile, loadActive, loadHistory, logSetsAndSaveActive, loadPlans, savePlan, setReminderDays,
   recoverStaleSession, saveActive, saveProfile, updateSession,
 } from './repo'
 
@@ -147,5 +147,16 @@ describe('plans', () => {
     const { reminderEnabled: _a, reminderTime: _b, nudgeEnabled: _c, reminderDays: _d, ...old } = makeProfile()
     await db.profile.put({ ...old, id: 'me', dirty: 0, updatedAt: '2026-01-01T00:00:00.000Z' } as unknown as LocalProfile)
     expect(await getProfile(db)).toMatchObject({ reminderEnabled: false, reminderTime: '18:00', nudgeEnabled: false, reminderDays: [] })
+  })
+})
+
+describe('setReminderDays', () => {
+  it('updates the stored profile, and never recreates one that was cleared (e.g. by sign-out)', async () => {
+    expect(await setReminderDays(db, ['mon'])).toBe(false)
+    expect(await getProfile(db)).toBeNull()
+    await saveProfile(db, makeProfile({ petName: 'Mochi' }))
+    expect(await setReminderDays(db, ['tue', 'fri'])).toBe(true)
+    expect(await getProfile(db)).toMatchObject({ petName: 'Mochi', reminderDays: ['tue', 'fri'] })
+    expect(await countDirty(db)).toBe(1)
   })
 })

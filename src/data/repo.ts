@@ -1,4 +1,4 @@
-import { dateKey } from '../domain/dates'
+import { dateKey, type Weekday } from '../domain/dates'
 import type { PlanDays, PlanSnapshot } from '../domain/plan'
 import { RESUME_WINDOW_MS, type ActiveSession } from '../domain/session'
 import type { History, Profile, SessionRecord, SetLog, SetLogDraft } from '../domain/types'
@@ -44,6 +44,16 @@ export async function getProfile(db: PocketGainsDB): Promise<Profile | null> {
 
 export async function saveProfile(db: PocketGainsDB, p: Profile): Promise<void> {
   await db.profile.put({ ...p, id: 'me', dirty: 1, updatedAt: stamp() })
+}
+
+/** Read-modify-write in one transaction: a background update can never bring back a profile that sign-out cleared. */
+export async function setReminderDays(db: PocketGainsDB, days: Weekday[]): Promise<boolean> {
+  return db.transaction('rw', db.profile, async () => {
+    const row = await db.profile.get('me')
+    if (!row) return false
+    await db.profile.put({ ...row, reminderDays: days, dirty: 1, updatedAt: stamp() })
+    return true
+  })
 }
 
 export async function loadHistory(db: PocketGainsDB): Promise<History> {
