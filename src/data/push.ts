@@ -11,6 +11,12 @@ export function pushSupported(): boolean {
   return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window
 }
 
+/** True when this device already has a push subscription it is allowed to use. */
+export async function pushReady(): Promise<boolean> {
+  if (!pushSupported() || Notification.permission !== 'granted') return false
+  return (await (await navigator.serviceWorker.ready).pushManager.getSubscription()) !== null
+}
+
 export async function subscribePush(client: SupabaseClient, vapidPublicKey: string | undefined): Promise<PushResult> {
   if (!vapidPublicKey || !pushSupported()) return 'unsupported'
   if ((await Notification.requestPermission()) !== 'granted') return 'denied'

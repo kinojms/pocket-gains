@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { SOURCES } from '../content/sources'
 import { useAppData } from '../data/AppData'
-import { subscribePush, unsubscribePush } from '../data/push'
+import { pushReady, subscribePush, unsubscribePush } from '../data/push'
 import { saveProfile } from '../data/repo'
 import { supabase } from '../data/supabase'
 import type { Equipment, Profile } from '../domain/types'
@@ -106,6 +106,7 @@ function ProfileForm({ initial }: { initial: Profile }) {
           onChange={(v) => void saveReminders(v)}
           subscribe={() => subscribePush(supabase!, import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined)}
           unsubscribe={() => unsubscribePush(supabase!)}
+          deviceReady={pushReady}
         />
       )}
 
