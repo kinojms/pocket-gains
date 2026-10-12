@@ -41,6 +41,8 @@ export default defineConfig({
     // Unit tests always run in local mode (no Supabase), whatever .env.local says; tests that need cloud mode mock it.
     env: { VITE_SUPABASE_URL: '', VITE_SUPABASE_ANON_KEY: '' },
     setupFiles: ['./src/test/setup.ts'],
+    // The design audit reads theme.css as text; other CSS stays stubbed out for speed.
+    css: { include: [/theme\.css/] },
     include: ['src/**/*.test.{ts,tsx}', 'supabase/functions/**/*.test.ts'],
   },
 })

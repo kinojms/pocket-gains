@@ -9,6 +9,7 @@ const sources = import.meta.glob<string>(['../screens/**/*.tsx', '../ui/**/*.tsx
 describe('design audit', () => {
   it('reads the interface sources', () => {
     expect(Object.keys(sources).length).toBeGreaterThan(20)
+    expect(theme.length).toBeGreaterThan(5000) // vite.config's test.css.include keeps theme.css readable
   })
 
   it('uses icons, not emoji, in the interface', () => {
@@ -16,6 +17,19 @@ describe('design audit', () => {
       text.split('\n').flatMap((line, i) => (/\p{Extended_Pictographic}/u.test(line) ? [`${f}:${i + 1}`] : [])),
     )
     expect(hits).toEqual([])
+  })
+
+  it('draws focus-mode text in solid white (faded white drops below 4.5:1 on the lighter gradient stop)', () => {
+    const rules = theme.match(/[^}]*\{[^}]*\}/g) ?? []
+    const faded = rules.filter((r) => /\.(focus|ring-caption)/.test(r.split('{')[0]) && /color: rgba\(255, 255, 255, 0\.\d+\)|opacity: 0\.\d+|#ffe0de/.test(r))
+    expect(faded).toEqual([])
+  })
+
+  it('keeps small links and selects at least 44px tall', () => {
+    for (const sel of ['.back-link', '.quiet-link', '.day-tile select']) {
+      const rule = theme.match(new RegExp(`\n${sel.replace('.', '\.')} \{[^}]*\}`))?.[0] ?? ''
+      expect(rule, sel).toMatch(/min-height: 44px/)
+    }
   })
 
   it('no longer uses the old colour names', () => {

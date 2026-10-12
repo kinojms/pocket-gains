@@ -32,4 +32,13 @@ describe('feedback', () => {
     expect(playSound).toHaveBeenCalledWith('tap')
     expect(vibrate).toHaveBeenCalledTimes(1)
   })
+
+  it('keeps a switch working for this visit when storage is blocked', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('blocked') })
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('blocked') })
+    saveFeedbackSettings({ sound: false, vibration: true })
+    feedback('tap')
+    expect(playSound).not.toHaveBeenCalled()
+    vi.restoreAllMocks()
+  })
 })

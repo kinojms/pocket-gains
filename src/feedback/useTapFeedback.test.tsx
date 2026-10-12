@@ -36,6 +36,14 @@ describe('tap feedback', () => {
     expect(feedback).toHaveBeenCalledWith('tap')
   })
 
+  it('still taps a button that disables itself when clicked (React commits before the event reaches document)', () => {
+    render(<Harness />)
+    const plain = screen.getByText('Plain') as HTMLButtonElement
+    plain.addEventListener('click', () => { plain.disabled = true })
+    fireEvent.click(plain)
+    expect(feedback).toHaveBeenCalledWith('tap')
+  })
+
   it('gives one feedback per tap, even for a label that also clicks its checkbox', () => {
     render(<Harness />)
     fireEvent.click(screen.getByText(/Dumbbells/)) // label click + synthetic input click

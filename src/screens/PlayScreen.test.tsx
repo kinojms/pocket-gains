@@ -53,6 +53,8 @@ describe('PlayScreen', () => {
     renderRoutes(db, routes, ['/session/play'])
 
     await user.click(await screen.findByRole('button', { name: 'End session' }))
+    // The sheet uses the normal app colours, not the white-on-colour workout styles.
+    expect(screen.getByRole('dialog').closest('.focus')).toBeNull()
     await user.click(screen.getByRole('button', { name: /No time/ }))
     await screen.findByText('SUMMARY')
     const h = await loadHistory(db)

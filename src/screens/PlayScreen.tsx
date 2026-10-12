@@ -152,6 +152,7 @@ function Player({ initial }: { initial: ActiveSession }) {
 
   const focus = state.phase === 'warmup' || !ex ? 0 : ex.rarity
   return (
+    <>
     <main className="screen full focus" data-focus={focus}>
       <div className="topbar">
         <span className="label">
@@ -168,15 +169,17 @@ function Player({ initial }: { initial: ActiveSession }) {
         </p>
       )}
       {view}
-      {ending && (
-        <EndEarlySheet
-          onCancel={() => setEnding(false)}
-          onConfirm={(reason) => {
-            setEnding(false)
-            dispatch({ type: 'END_EARLY', reason })
-          }}
-        />
-      )}
     </main>
+    {/* Outside the focus-mode <main>, so the sheet keeps the normal app colours. */}
+    {ending && (
+      <EndEarlySheet
+        onCancel={() => setEnding(false)}
+        onConfirm={(reason) => {
+          setEnding(false)
+          dispatch({ type: 'END_EARLY', reason })
+        }}
+      />
+    )}
+    </>
   )
 }

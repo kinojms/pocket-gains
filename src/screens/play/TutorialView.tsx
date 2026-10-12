@@ -14,7 +14,7 @@ export function TutorialView({ exercise, settings, mode, readyLabel, onReady }: 
   const [expanded, setExpanded] = useState(mode === 'full')
   return (
     <section className="stack play">
-      <RarityCard exercise={exercise} settings={settings} />
+      <RarityCard exercise={exercise} settings={settings} title="h1" wholeArt />
       {expanded ? (
         <>
           <a className="btn" href={videoUrl(exercise)} target="_blank" rel="noreferrer"><Icon name="video" /> Watch full tutorial</a>

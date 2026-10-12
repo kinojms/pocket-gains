@@ -16,7 +16,7 @@ export function tapKindFor(target: EventTarget | null): FeedbackKind | null {
   return KINDS.find((k) => k === kind) ?? 'tap'
 }
 
-/** One listener gives every button its tap sound and vibration. */
+/** One listener gives every button its tap sound and vibration. Capture phase: React may disable the button before the event bubbles up. */
 export function useTapFeedback(): void {
   useEffect(() => {
     let last = 0
@@ -28,7 +28,7 @@ export function useTapFeedback(): void {
       last = now
       feedback(kind)
     }
-    document.addEventListener('click', onClick)
-    return () => document.removeEventListener('click', onClick)
+    document.addEventListener('click', onClick, true)
+    return () => document.removeEventListener('click', onClick, true)
   }, [])
 }
