@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ringOffset } from './ring'
+import { ringOffset } from './ringMath'
 
 describe('ringOffset', () => {
   it('maps 0..1 to a full..empty dash offset and clamps the rest', () => {

@@ -8,6 +8,7 @@ import { feedback } from '../feedback/feedback'
 import { remainingMs, repRangeFor, restSecFor, step, type ActiveSession, type SessionAction } from '../domain/session'
 import { useNow } from '../hooks/useNow'
 import { useWakeLock } from '../hooks/useWakeLock'
+import { Icon } from '../ui/Icon'
 import { EndEarlySheet } from './play/EndEarlySheet'
 import { RestView } from './play/RestView'
 import { SetView } from './play/SetView'
@@ -102,12 +103,13 @@ function Player({ initial }: { initial: ActiveSession }) {
       <WarmupView
         exercise={content.exercises[state.warmupId]}
         remaining={remainingMs(state.warmupEndsAt, now)}
+        totalMs={(content.exercises[state.warmupId].durationSec ?? 180) * 1000}
         onDone={() => dispatch({ type: 'WARMUP_DONE' })}
       />
     )
   } else if (ex && (state.phase === 'tutorial' || showTutorial)) {
     const mode = showTutorial ? 'full' : tutorialMode(ex.id, history)
-    const label = showTutorial ? 'Back to my set ▶' : mode === 'full' ? "I'm ready. Start set 1 ▶" : 'Skip, start set 1 ▶'
+    const label = showTutorial ? 'Back to my set' : mode === 'full' ? "I'm ready. Start set 1" : 'Skip, start set 1'
     view = (
       <TutorialView
         key={`${ex.id}-${mode}`}
@@ -148,15 +150,16 @@ function Player({ initial }: { initial: ActiveSession }) {
     )
   }
 
+  const focus = state.phase === 'warmup' || !ex ? 0 : ex.rarity
   return (
-    <main className="screen full">
+    <main className="screen full focus" data-focus={focus}>
       <div className="topbar">
         <span className="label">
           {deck?.name}
           {state.phase !== 'warmup' && state.phase !== 'summary' && ` · Card ${state.cardIndex + 1} / ${state.hand.length}`}
         </span>
         {state.phase !== 'summary' && (
-          <button className="btn btn-ghost end-btn" aria-label="End session" onClick={() => setEnding(true)}>✕</button>
+          <button className="btn round" aria-label="End session" onClick={() => setEnding(true)}><Icon name="close" /></button>
         )}
       </div>
       {saveError && (

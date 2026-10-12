@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { ringOffset } from './ring'
+import { ringOffset } from './ringMath'
 
 export function Ring({ value, size = 220, thickness = 9, color = 'var(--primary)', track = 'var(--panel-border)', children }: {
   value: number

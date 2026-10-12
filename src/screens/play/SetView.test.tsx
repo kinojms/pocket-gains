@@ -23,6 +23,17 @@ describe('SetView', () => {
     expect(screen.queryByText(/kg/)).toBeNull()
   })
 
+  it('shows reps in a ring with set pips, and logs with the "log" feedback', () => {
+    const { container } = render(
+      <SetView exercise={content.exercises['pushup']} settings={settings} setNo={2} initialReps={8} initialWeight={null}
+        onLog={vi.fn()} onHurt={vi.fn()} onShowTutorial={vi.fn()} />,
+    )
+    expect(container.querySelector('.ring')).not.toBeNull()
+    expect(container.querySelectorAll('.pips i')).toHaveLength(3)
+    expect(container.querySelector('.pips i.now')).toBe(container.querySelectorAll('.pips i')[1])
+    expect(screen.getByRole('button', { name: /Log set/ })).toHaveAttribute('data-feedback', 'log')
+  })
+
   it('shows a weight control for dumbbell moves and reports pain with current reps', async () => {
     const onHurt = vi.fn()
     const user = userEvent.setup()
