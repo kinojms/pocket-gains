@@ -14,7 +14,7 @@ _Last updated: 2026-10-12_
 | Milestone | What it covers | Status |
 |---|---|---|
 | **M1: Playable loop + basic pet** | Onboarding, decks, dealt hands, workout player, summary, XP/levels, sync | ✅ Done, deployed, checked on-device |
-| **M2: Consistency** | Weekly plan, streaks + shield, reminders, progress calendar and exercise history, plus 8 robustness fixes | 🔧 Built on branch `m2-consistency`, reviewed and fixed; waiting on your setup steps before merge |
+| **M2: Consistency** | Weekly plan, streaks + shield, reminders, progress calendar and exercise history, plus 8 robustness fixes | ✅ Done, deployed, reminders set up, checked on-device |
 | **M3: Progression** | Card levels, upgrade/step-down prompts, unlockable variations, placement test | ⏳ Not started |
 | **M4: Pet as mirror** | Pet body changes with the muscles you train; text milestones | ⏳ Not started |
 | **Design pass** | Overall UI/visual polish | ⏳ After the feature milestones (your call: features first) |
@@ -22,17 +22,13 @@ _Last updated: 2026-10-12_
 
 ## Next session
 
-M2 is built on branch `m2-consistency`: 23 commits, 180 unit tests and 3 browser tests passing. **Nothing is on `main` yet.**
+M2 is done: merged, deployed, reminders running (cron every 15 minutes), and checked on-device on 2026-10-12.
 
-**Your part, in order:**
-1. In the Supabase SQL Editor, run `supabase/migrations/20261001000000_m2.sql`, then `20261002000000_m2_plan_experience.sql`.
-2. Merge `m2-consistency` into `main` (only after step 1; every push to `main` deploys).
-3. Reminders setup (README → "Reminders (one-time setup)"):
-   - `npx supabase login`.
-   - `node scripts/setup-vapid.mjs <project-ref> <email>`.
-   - Deploy `send-reminders`.
-   - Create the Vault secrets and the 15-minute cron job with your **secret** key. Never paste that key into chat.
-4. Check on your phone: a reminder arrives, the streak and calendar look right, offline launch works, the update banner shows, and Profile → "Edit my week" works.
+**Up next:** M3 (Progression): card levels, upgrade/step-down prompts, unlockable variations, placement test. It starts with brainstorming and a plan.
+
+**How reminders behave:**
+- A reminder arrives at the first 15-minute check at or after your time, so up to 15 minutes late.
+- You get at most one reminder a day.
 
 **Deferred to later:**
 - The time zone can't be edited after onboarding (reminders fire at the old local time if you move).
@@ -54,6 +50,7 @@ M2 is built on branch `m2-consistency`: 23 commits, 180 unit tests and 3 browser
 ## Changelog
 
 ### 2026-10-12: M2 built
+- **Shipped:** merged to `main` and deployed; reminders set up and every on-device check passed.
 - **Robustness:**
   - A failed save never stalls a workout.
   - Recovery can't hang startup.
@@ -118,6 +115,7 @@ M2 is built on branch `m2-consistency`: 23 commits, 180 unit tests and 3 browser
 
 ## Setup notes
 
-- **Supabase migrations:** run in order in the SQL Editor: `20260929000000_init.sql` ✅, `20260930000000_pet_color.sql` ✅, `20261001000000_m2.sql` and `20261002000000_m2_plan_experience.sql` (pending).
+- **Supabase migrations:** run in order in the SQL Editor: `20260929000000_init.sql` ✅, `20260930000000_pet_color.sql` ✅, `20261001000000_m2.sql` ✅, `20261002000000_m2_plan_experience.sql` ✅.
+- **Reminders:** VAPID keys set (don't re-run `scripts/setup-vapid.mjs`), `send-reminders` deployed, Vault secrets + cron job `send-reminders` created.
 - **Local development:** `npm install`, `npm run dev`. `.env.local` holds the public Supabase URL and key (git-ignored).
 - **Details:** full setup steps are in [`README.md`](README.md).
