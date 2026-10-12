@@ -45,6 +45,10 @@ describe('levels', () => {
 })
 
 describe('petLine', () => {
+  it('has rest-day lines', () => {
+    expect(petLine('home_rest', 'x')).toMatch(/rest|recover/i)
+  })
+
   it('is deterministic for a seed and never empty', () => {
     expect(petLine('summary_partial', 'abc')).toBe(petLine('summary_partial', 'abc'))
     expect(petLine('home_fresh', 'x').length).toBeGreaterThan(0)

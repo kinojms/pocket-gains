@@ -34,7 +34,7 @@ export function levelFromXp(xp: number): { level: number; xpIntoLevel: number; x
   return { level, xpIntoLevel: rest, xpForNext: xpToNext(level) }
 }
 
-export type PetMoment = 'home_fresh' | 'home_trained_today' | 'summary_complete' | 'summary_partial' | 'level_up'
+export type PetMoment = 'home_fresh' | 'home_trained_today' | 'home_rest' | 'summary_complete' | 'summary_partial' | 'level_up'
 
 const LINES: Record<PetMoment, string[]> = {
   home_fresh: [
@@ -42,6 +42,11 @@ const LINES: Record<PetMoment, string[]> = {
     "I've been stretching. Your turn! 👀",
     "Just one session today. We've got this.",
     'I saved you a spot on the floor. Let’s go!',
+  ],
+  home_rest: [
+    'Rest day! Muscles grow while we chill 😌',
+    'Recovery is part of the plan. See you next session!',
+    'Rest day: stretch, drink water, sleep well 💤',
   ],
   home_trained_today: [
     'We trained today! I feel stronger already 💪',
