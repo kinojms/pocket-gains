@@ -80,6 +80,16 @@ export async function loadActive(db: PocketGainsDB): Promise<ActiveSession | nul
   return (row?.value as ActiveSession | undefined) ?? null
 }
 
+/** Sets and the resume point are saved atomically, so a crash can never resume "before" a logged set. */
+export async function logSetsAndSaveActive(
+  db: PocketGainsDB, sessionId: string, drafts: SetLogDraft[], active: ActiveSession, at = new Date(),
+): Promise<void> {
+  await db.transaction('rw', [db.sets, db.kv], async () => {
+    if (drafts.length > 0) await addSetLogs(db, sessionId, drafts, at)
+    await saveActive(db, active)
+  })
+}
+
 export type RecoveryResult = 'none' | 'resumable' | 'finalized'
 
 export async function recoverStaleSession(db: PocketGainsDB, now = Date.now()): Promise<RecoveryResult> {

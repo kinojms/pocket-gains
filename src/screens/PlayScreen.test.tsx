@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { createSession, loadActive, loadHistory, saveActive, saveProfile } from '../data/repo'
 import { startSession } from '../domain/session'
 import { makeProfile, makeSession } from '../domain/testFixtures'
@@ -84,5 +84,23 @@ describe('PlayScreen resume', () => {
     await router.navigate('/session/play')
     expect(await screen.findByRole('timer', { name: /Rest/ })).toBeInTheDocument()
     expect((await loadHistory(db)).sets).toHaveLength(1)
+  })
+})
+
+describe('PlayScreen save failures', () => {
+  it('keeps the workout going and still reaches the summary when a save fails', async () => {
+    const db = await seeded()
+    const user = userEvent.setup()
+    renderRoutes(db, routes, ['/session/play'])
+    await user.click(await screen.findByRole('button', { name: /Start first card/ }))
+    await user.click(screen.getByRole('button', { name: /start set 1/i }))
+
+    vi.spyOn(db.sets, 'bulkPut').mockRejectedValueOnce(new Error('quota'))
+    await user.click(screen.getByRole('button', { name: /Log set/ }))
+    expect(await screen.findByRole('alert')).toHaveTextContent(/Couldn't save/)
+
+    await user.click(screen.getByRole('button', { name: 'End session' }))
+    await user.click(screen.getByRole('button', { name: /No time/ }))
+    expect(await screen.findByText('SUMMARY')).toBeInTheDocument()
   })
 })

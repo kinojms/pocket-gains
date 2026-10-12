@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Navigate, useNavigate } from 'react-router'
 import { content } from '../content'
 import { useAppData } from '../data/AppData'
-import { addSetLogs, loadActive, saveActive, updateSession } from '../data/repo'
+import { addSetLogs, loadActive, logSetsAndSaveActive, saveActive, updateSession } from '../data/repo'
 import { lastWeightFor, tutorialMode } from '../domain/history'
 import { remainingMs, repRangeFor, restSecFor, step, type ActiveSession, type SessionAction } from '../domain/session'
 import { useNow } from '../hooks/useNow'
@@ -42,6 +42,7 @@ function Player({ initial }: { initial: ActiveSession }) {
   const [ending, setEnding] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
   const [weights, setWeights] = useState<Record<string, number>>({})
+  const [saveError, setSaveError] = useState(false)
   const now = useNow(250)
   useWakeLock(state.phase !== 'summary')
 
@@ -53,20 +54,29 @@ function Player({ initial }: { initial: ActiveSession }) {
       stateRef.current = next
       setState(next)
       setShowTutorial(false)
-      // Persist in order; a later write never overtakes an earlier one.
-      writes.current = writes.current.then(async () => {
-        if (logs.length > 0) await addSetLogs(db, next.sessionId, logs)
-        if (next.phase === 'summary') {
-          await updateSession(db, next.sessionId, {
-            status: next.status, endReason: next.endReason, endedAt: new Date().toISOString(),
-          })
-          await saveActive(db, null)
-          await afterWrite()
-          navigate(`/session/summary/${next.sessionId}`, { replace: true })
-        } else {
-          await saveActive(db, next)
-        }
-      })
+      // Persist in order; a later write never overtakes an earlier one, and one failure never blocks the rest.
+      writes.current = writes.current
+        .then(async () => {
+          if (next.phase === 'summary') {
+            try {
+              if (logs.length > 0) await addSetLogs(db, next.sessionId, logs)
+              await updateSession(db, next.sessionId, {
+                status: next.status, endReason: next.endReason, endedAt: new Date().toISOString(),
+              })
+              await saveActive(db, null)
+            } finally {
+              await afterWrite().catch(() => undefined)
+              navigate(`/session/summary/${next.sessionId}`, { replace: true })
+            }
+          } else {
+            await logSetsAndSaveActive(db, next.sessionId, logs, next)
+            setSaveError(false)
+          }
+        })
+        .catch((e: unknown) => {
+          console.error('could not save workout step', e)
+          setSaveError(true)
+        })
     },
     [db, afterWrite, navigate],
   )
@@ -148,6 +158,11 @@ function Player({ initial }: { initial: ActiveSession }) {
           <button className="btn btn-ghost end-btn" aria-label="End session" onClick={() => setEnding(true)}>✕</button>
         )}
       </div>
+      {saveError && (
+        <p role="alert" className="panel">
+          Couldn't save the last step on this phone. Keep going: the next step saves again.
+        </p>
+      )}
       {view}
       {ending && (
         <EndEarlySheet

@@ -1,9 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { startSession } from '../domain/session'
 import { makeProfile, makeSession } from '../domain/testFixtures'
 import { PocketGainsDB, type LocalProfile } from './db'
 import {
-  addSetLogs, addSoreness, countDirty, createSession, getProfile, loadActive, loadHistory,
+  addSetLogs, addSoreness, countDirty, createSession, getProfile, loadActive, loadHistory, logSetsAndSaveActive,
   recoverStaleSession, saveActive, saveProfile, updateSession,
 } from './repo'
 
@@ -99,5 +99,22 @@ describe('recoverStaleSession', () => {
     await saveActive(db, { ...active(0), phase: 'summary', status: 'complete' })
     expect(await recoverStaleSession(db, 1)).toBe('none')
     expect(await loadActive(db)).toBeNull()
+  })
+})
+
+describe('logSetsAndSaveActive', () => {
+  it('writes the set and the resume point together, or neither', async () => {
+    const a = { ...active(0), phase: 'rest' as const, setNo: 2 }
+    await logSetsAndSaveActive(db, 's1', [{ exerciseId: 'pushup', setNo: 1, reps: 9, weightKg: null, stoppedForPain: false }], a)
+    expect((await loadHistory(db)).sets).toHaveLength(1)
+    expect((await loadActive(db))?.setNo).toBe(2)
+
+    vi.spyOn(db.kv, 'put').mockRejectedValueOnce(new Error('quota'))
+    const b = { ...a, phase: 'set' as const }
+    await expect(
+      logSetsAndSaveActive(db, 's1', [{ exerciseId: 'pushup', setNo: 2, reps: 8, weightKg: null, stoppedForPain: false }], b),
+    ).rejects.toThrow()
+    expect((await loadHistory(db)).sets).toHaveLength(1)
+    expect((await loadActive(db))?.phase).toBe('rest')
   })
 })
