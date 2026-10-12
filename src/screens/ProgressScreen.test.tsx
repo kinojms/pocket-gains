@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { addSetLogs, createSession, saveProfile } from '../data/repo'
 import { makeProfile, makeSession } from '../domain/testFixtures'
 import { makeTestDb, renderRoutes } from '../test/renderApp'
@@ -19,6 +19,12 @@ describe('syncStatusText', () => {
 })
 
 describe('ProgressScreen', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date(2026, 0, 11, 20))
+  })
+  afterEach(() => vi.useRealTimers())
+
   it('lists recent sessions with status and set counts', async () => {
     const db = await makeTestDb(async (d) => {
       await saveProfile(d, makeProfile())
@@ -34,5 +40,24 @@ describe('ProgressScreen', () => {
     expect(screen.getByText('Partial')).toBeInTheDocument()
     expect(screen.getByText('Complete')).toBeInTheDocument()
     expect(screen.getByText('2 sets')).toBeInTheDocument()
+  })
+
+  it('shows streak stats, a calendar with trained days, and links to exercise history', async () => {
+    const db = await makeTestDb(async (d) => {
+      await saveProfile(d, makeProfile({ experience: 'consistent', onboardedAt: new Date(2026, 0, 5, 8).toISOString() }))
+      await createSession(d, makeSession({
+        id: 'm', startedAt: new Date(2026, 0, 5, 12).toISOString(),
+        settings: { sets: 1, cards: 1, rir: [1, 3], restSec: null, repRange: null },
+      }))
+      await addSetLogs(d, 'm', [{ exerciseId: 'pushup', setNo: 1, reps: 11, weightKg: null, stoppedForPain: false }])
+    })
+    renderRoutes(db, [{ path: '/progress', element: <ProgressScreen /> }], ['/progress'])
+    expect(await screen.findByLabelText('Current streak: 0 days')).toBeInTheDocument()
+    expect(screen.getByLabelText('Best streak: 1 day')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'January 2026' })).toBeInTheDocument()
+    expect(screen.getByLabelText('January 5: trained')).toBeInTheDocument()
+    expect(screen.getByLabelText('January 6: covered by shield')).toBeInTheDocument()
+    expect(screen.getByLabelText('January 8: missed')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Push-up/ })).toHaveAttribute('href', '/progress/exercise/pushup')
   })
 })

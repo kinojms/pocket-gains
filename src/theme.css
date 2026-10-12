@@ -100,3 +100,13 @@ select { padding: 10px; border-radius: var(--radius); background: var(--ink); co
 .update-banner { position: fixed; left: 12px; right: 12px; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 5; background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 12px; display: flex; flex-direction: column; gap: 8px; max-width: 496px; margin: 0 auto; }
 .streak-row { padding: 0 4px; }
 .streak { font-size: 20px; font-weight: 800; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+.cal-head { font-size: 11px; color: var(--muted); }
+.cal-cell { aspect-ratio: 1; border-radius: 8px; background: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; position: relative; }
+.cal-out { opacity: 0.3; }
+.cal-done { background: color-mix(in srgb, var(--good) 35%, var(--ink)); }
+.cal-missed { background: color-mix(in srgb, var(--danger) 30%, var(--ink)); }
+.cal-pending { outline: 2px solid var(--accent); }
+.cal-planned::after { content: ''; position: absolute; bottom: 5px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent-2); }
+.cal-icon { font-size: 11px; line-height: 1; min-height: 11px; }
+.sparkline { display: block; margin: 0 auto; }
