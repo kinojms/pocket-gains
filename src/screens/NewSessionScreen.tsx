@@ -10,6 +10,7 @@ import { useNow } from '../hooks/useNow'
 import type { HandCard, SessionSettings } from '../domain/types'
 import { InfoSources } from '../ui/InfoSources'
 import { Stepper } from '../ui/Stepper'
+import { Icon } from '../ui/Icon'
 import { RarityCard } from '../ui/RarityCard'
 
 const REP_OPTIONS: { label: string; value: [number, number] | null }[] = [
@@ -124,7 +125,7 @@ export function NewSessionScreen() {
           <InfoSources keys={DEFAULT_SOURCES.cards} />
         </div>
         <p className="muted">About {estimateMinutes(s)} minutes including a 3-minute warm-up.</p>
-        <button className="btn btn-primary btn-block" onClick={() => deal(sessionId)}>Deal my hand ▶</button>
+        <button className="btn btn-primary btn-block" onClick={() => deal(sessionId)}>Deal my hand <Icon name="play" size={18} /></button>
         <button className="btn btn-ghost" onClick={() => navigate('/')}>Back</button>
       </main>
     )
@@ -137,22 +138,26 @@ export function NewSessionScreen() {
         <h1>Your hand</h1>
         <span className="muted">{swapsLeft} swap{swapsLeft === 1 ? '' : 's'} left</span>
       </header>
-      {hand.map((card, i) => {
-        const canSwap = swapsLeft > 0 && swapOptions({ ...args, hand, index: i }).length > 0
-        return (
-          <RarityCard key={card.chainId} exercise={content.exercises[card.exerciseId]} settings={s}>
-            <button className="btn" disabled={!canSwap} onClick={() => setSwapping(i)}>⇄ Swap</button>
-          </RarityCard>
-        )
-      })}
+      <div className="hand-row" key={rerollsLeft}>
+        {hand.map((card, i) => {
+          const canSwap = swapsLeft > 0 && swapOptions({ ...args, hand, index: i }).length > 0
+          return (
+            <div key={card.chainId} className="hand-slot" style={{ ['--i' as string]: i }}>
+              <RarityCard exercise={content.exercises[card.exerciseId]} settings={s}>
+                <button className="btn" disabled={!canSwap} onClick={() => setSwapping(i)}><Icon name="swap" size={18} /> Swap</button>
+              </RarityCard>
+            </div>
+          )
+        })}
+      </div>
       <button
         className="btn btn-ghost" disabled={rerollsLeft === 0}
         onClick={() => { setRerollsLeft((n) => n - 1); deal(`${sessionId}:reroll`) }}
       >
-        🎲 Reroll whole hand ({rerollsLeft} left)
+        <Icon name="dice" /> Reroll whole hand ({rerollsLeft} left)
       </button>
       <button className="btn btn-primary btn-block" disabled={hand.length === 0 || starting} onClick={() => void start()}>
-        Start ▶
+        Start <Icon name="play" size={18} />
       </button>
       <button className="btn btn-ghost" onClick={() => setStage('setup')}>Back to setup</button>
 

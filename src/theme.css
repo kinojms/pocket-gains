@@ -94,11 +94,6 @@ a.choice { text-decoration: none; }
 .sources summary { cursor: pointer; color: var(--text-muted); font-size: 13px; }
 .sources ul { font-size: 12px; color: var(--text-muted); padding-left: 18px; }
 
-/* legacy:decks */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-.unavailable { opacity: 0.45; }
-/* end legacy:decks */
-
 /* legacy:progress */
 .stat { font-size: 28px; }
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
@@ -271,3 +266,19 @@ a.choice { text-decoration: none; }
 @keyframes pop-in { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes grow { from { transform: scale(1); } to { transform: scale(1.1); } }
 @media (prefers-reduced-motion: reduce) { .levelup-card, .levelup-pet { animation: none; } }
+
+/* decks + hand */
+.deck { overflow: hidden; }
+.deck-fan { position: relative; height: 120px; display: flex; justify-content: center; }
+.deck-fan .rcard { position: absolute; top: 6px; width: 104px; }
+.deck-fan .rcard .rcard-art { height: 60px; }
+.deck-fan .rcard .rcard-stats, .deck-fan .rcard .rcard-type { display: none; }
+.deck-fan .rcard:nth-child(1) { transform: translateX(-70px) rotate(-10deg); }
+.deck-fan .rcard:nth-child(2) { z-index: 1; }
+.deck-fan .rcard:nth-child(3) { transform: translateX(70px) rotate(10deg); }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.unavailable { opacity: 0.45; }
+.hand-row { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 6px 4px 14px; margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+.hand-slot { flex: 0 0 76%; max-width: 300px; scroll-snap-align: center; animation: deal-in 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both; animation-delay: calc(var(--i) * 90ms); }
+@keyframes deal-in { from { opacity: 0; transform: translateY(30px) rotateY(80deg); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .hand-slot { animation: none; } }
