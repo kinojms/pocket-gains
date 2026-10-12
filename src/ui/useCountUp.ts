@@ -4,12 +4,9 @@ import { prefersReducedMotion } from './motion'
 /** Counts from 0 to `target` with an ease-out; shows `target` at once when motion is reduced. */
 export function useCountUp(target: number, ms = 900): number {
   const [reduced] = useState(prefersReducedMotion)
-  const [value, setValue] = useState(reduced ? target : 0)
+  const [value, setValue] = useState(0)
   useEffect(() => {
-    if (reduced) {
-      setValue(target)
-      return
-    }
+    if (reduced) return
     let frame = 0
     const start = performance.now()
     const tick = (t: number) => {
@@ -20,5 +17,5 @@ export function useCountUp(target: number, ms = 900): number {
     frame = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(frame)
   }, [target, ms, reduced])
-  return value
+  return reduced ? target : value
 }

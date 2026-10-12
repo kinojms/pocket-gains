@@ -5,7 +5,7 @@ import type { Exercise, SessionSettings } from '../domain/types'
 import { Icon } from './Icon'
 import { Pet } from './Pet'
 
-export const RARITY_LABEL: Record<Exercise['rarity'], string> = { 1: 'Common', 2: 'Rare', 3: 'Epic' }
+const RARITY_LABEL: Record<Exercise['rarity'], string> = { 1: 'Common', 2: 'Rare', 3: 'Epic' }
 const MOVEMENT: Record<Exercise['movement'], string> = {
   push: 'Push', pull: 'Pull', squat: 'Squat', hinge: 'Hinge', core: 'Core', isolation: 'Isolation', warmup: 'Warm-up',
 }
