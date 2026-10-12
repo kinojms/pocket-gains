@@ -17,7 +17,7 @@ _Last updated: 2026-10-12_
 | **M2: Consistency** | Weekly plan, streaks + shield, reminders, progress calendar and exercise history, plus 8 robustness fixes | ✅ Done, deployed, reminders set up, checked on-device |
 | **M3: Progression** | Card levels, upgrade/step-down prompts, unlockable variations, placement test | ⏳ Not started |
 | **M4: Pet as mirror** | Pet body changes with the muscles you train; text milestones | ⏳ Not started |
-| **Design pass** | Overall UI/visual polish | ⏳ After the feature milestones (your call: features first) |
+| **Design pass** | Overall UI/visual polish | 🔧 Built on branch `design-pass`; waiting for on-device check |
 | **Diet / nutrition** | Separate sub-project | ⏳ Later, own spec |
 
 ## Next session
@@ -48,6 +48,16 @@ M2 is done: merged, deployed, reminders running (cron every 15 minutes), and che
 - **Quality:** 116 unit/component tests + 3 end-to-end browser tests run in CI on every push.
 
 ## Changelog
+
+### 2026-10-13: Design pass built
+- **Look:** "Sky meadow" theme with a day/night cycle (morning, day, sunset, night), Fredoka + Nunito fonts, chunky press-in buttons and panels, hand-drawn icons instead of emoji.
+- **Pet:** lives in a meadow scene; moods (happy, excited, proud, relaxed, sleepy, missed you), blinking, looking around, jumps when tapped.
+- **Cards:** rarity colours (blue common, purple rare, gold epic with a shine).
+- **Workout:** focus mode in the card's rarity colour with rep and rest rings and set pips.
+- **Celebrations:** confetti, count-ups, streak pop and a level-up overlay.
+- **Feedback:** tap sounds and vibration, with per-device switches in Profile.
+- **Size:** adds about 110 KB to the download (about 64 KB of it is the two fonts).
+
 
 ### 2026-10-12: M2 built
 - **Shipped:** merged to `main` and deployed; reminders set up and every on-device check passed.
