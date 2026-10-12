@@ -33,6 +33,33 @@ Copy `.env.example` to `.env.local` and fill in the two values.
 ### Install on Android
 Open the site in Chrome → sign in → ⋮ → **Install app**.
 
+## Reminders (one-time setup)
+
+1. Run `supabase/migrations/20261001000000_m2.sql` in the SQL Editor **before** deploying the M2 app.
+2. Log in to the CLIs: `npx supabase login` (and `gh auth login` if needed).
+3. Keys: `node scripts/setup-vapid.mjs <project-ref> <your-email>`.
+   This stores the private key only in Supabase secrets.
+4. Deploy the function:
+   `npx supabase functions deploy send-reminders --project-ref <project-ref> --no-verify-jwt --use-api`
+5. Schedule it. In the SQL Editor, replace the two values and run:
+
+       select vault.create_secret('https://<project-ref>.supabase.co', 'project_url');
+       select vault.create_secret('<your SECRET key, sb_secret_…>', 'secret_key');
+       select cron.schedule('send-reminders', '*/15 * * * *', $$
+         select net.http_post(
+           url := (select decrypted_secret from vault.decrypted_secrets where name = 'project_url') || '/functions/v1/send-reminders',
+           headers := jsonb_build_object(
+             'Content-Type', 'application/json',
+             'apikey', (select decrypted_secret from vault.decrypted_secrets where name = 'secret_key'),
+             'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'secret_key')
+           ),
+           body := '{}'::jsonb
+         );
+       $$);
+
+   The secret key is under Project Settings → API keys. Never put it in the repo.
+6. Push to `main` so the app rebuilds with the public VAPID key.
+
 ## Credits
 
 Exercise images: [free-exercise-db](https://github.com/yuhonas/free-exercise-db) (public domain).
