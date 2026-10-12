@@ -95,8 +95,6 @@ a.choice { text-decoration: none; }
 .sources ul { font-size: 12px; color: var(--text-muted); padding-left: 18px; }
 
 /* legacy:pet */
-.xpbar { height: 8px; background: var(--ink); border-radius: 4px; overflow: hidden; width: 160px; }
-.xpbar > div { height: 100%; background: var(--accent-2); }
 @keyframes pet-squish { 0%, 100% { transform: translateY(0) scale(1, 1); } 40% { transform: translateY(-6px) scale(0.96, 1.04); } 80% { transform: translateY(0) scale(1.06, 0.94); } }
 .pet-squish { animation: pet-squish 1.8s ease-in-out infinite; transform-origin: 50% 90%; }
 @media (prefers-reduced-motion: reduce) { .pet-squish { animation: none; } }
@@ -158,3 +156,26 @@ a.choice { text-decoration: none; }
 .swatch[aria-checked='true'] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--bg) inset; }
 .update-banner { position: fixed; left: 12px; right: 12px; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 5; background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 12px; display: flex; flex-direction: column; gap: 8px; max-width: 496px; margin: 0 auto; }
 /* end legacy:profile */
+
+/* kit: small parts */
+.icon { flex: none; }
+.pill { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 999px; background: var(--panel); color: var(--text); border: 2px solid var(--panel-border); font-weight: 800; font-size: 14px; }
+.pill-flame .icon { color: var(--primary); }
+.pill-shield .icon { color: var(--rarity-1-base); }
+.pill-good .icon { color: var(--success); }
+.pill.pop { animation: pill-pop 0.7s cubic-bezier(0.3, 1.6, 0.5, 1); }
+@keyframes pill-pop { 0% { transform: scale(0.6); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+.xpbar { width: 190px; height: 14px; border-radius: 999px; overflow: hidden; background: var(--panel-sunken); border: 2px solid var(--panel-border); }
+.xpbar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--gold), var(--primary)); transition: width 0.9s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.ring { position: relative; flex: none; }
+.ring svg { display: block; width: 100%; height: 100%; }
+.ring-fill { transition: stroke-dashoffset 0.3s; }
+.ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.pips { display: inline-flex; gap: 6px; }
+.pips i { display: block; width: 24px; height: 8px; border-radius: 4px; background: currentColor; opacity: 0.3; }
+.pips i.on { opacity: 1; }
+.pips i.now { opacity: 1; background: var(--gold); }
+@media (prefers-reduced-motion: reduce) {
+  .pill.pop { animation: none; }
+  .xpbar-fill, .ring-fill { transition: none; }
+}
