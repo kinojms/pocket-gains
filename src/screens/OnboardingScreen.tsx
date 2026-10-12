@@ -30,6 +30,10 @@ export function OnboardingScreen() {
       equipment: (['bodyweight', 'dumbbell', 'band'] as Equipment[]).filter((e) => equipment.includes(e)),
       petName: petName.trim() || 'Biscuit',
       petColor,
+      reminderEnabled: false,
+      reminderTime: '18:00',
+      nudgeEnabled: false,
+      reminderDays: [],
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     })
     await afterWrite()

@@ -1,6 +1,8 @@
 import type { Table } from 'dexie'
+import type { Weekday } from '../domain/dates'
+import type { PlanDays } from '../domain/plan'
 import type { EndReason, Equipment, Experience, Goal, HandCard, PetColor, SessionSettings, SessionStatus } from '../domain/types'
-import type { LocalProfile, LocalSession, LocalSet, LocalSoreness, PocketGainsDB, SyncMeta } from './db'
+import type { LocalPlan, LocalProfile, LocalSession, LocalSet, LocalSoreness, PocketGainsDB, SyncMeta } from './db'
 import type { Remote, RemoteTable, Row } from './remote'
 
 // ---- mapping: local camelCase <-> remote snake_case ----
@@ -8,11 +10,16 @@ import type { Remote, RemoteTable, Row } from './remote'
 const profileToRow = (p: LocalProfile): Row => ({
   goal: p.goal, experience: p.experience, onboarded_at: p.onboardedAt, equipment: p.equipment,
   pet_name: p.petName, pet_color: p.petColor, timezone: p.timezone, updated_at: p.updatedAt,
+  reminder_enabled: p.reminderEnabled, reminder_time: p.reminderTime, nudge_enabled: p.nudgeEnabled, reminder_days: p.reminderDays,
 })
 const profileFromRow = (r: Row): LocalProfile => ({
   id: 'me', goal: r.goal as Goal, experience: r.experience as Experience, onboardedAt: iso(r.onboarded_at),
   equipment: r.equipment as Equipment[], petName: r.pet_name as string,
   petColor: (r.pet_color as PetColor | undefined) ?? 'mint', timezone: r.timezone as string,
+  reminderEnabled: Boolean(r.reminder_enabled ?? false),
+  reminderTime: typeof r.reminder_time === 'string' ? r.reminder_time.slice(0, 5) : '18:00',
+  nudgeEnabled: Boolean(r.nudge_enabled ?? false),
+  reminderDays: (r.reminder_days as Weekday[] | undefined) ?? [],
   dirty: 0, updatedAt: iso(r.updated_at),
 })
 
@@ -45,6 +52,14 @@ const sorenessFromRow = (r: Row): LocalSoreness => ({
   createdAt: iso(r.created_at), dirty: 0, updatedAt: iso(r.updated_at),
 })
 
+const planToRow = (p: LocalPlan): Row => ({
+  id: p.id, effective_from: p.effectiveFrom, saved_at: p.savedAt, days: p.days, is_custom: p.isCustom, updated_at: p.updatedAt,
+})
+const planFromRow = (r: Row): LocalPlan => ({
+  id: r.id as string, effectiveFrom: String(r.effective_from).slice(0, 10), savedAt: iso(r.saved_at),
+  days: r.days as PlanDays, isCustom: Boolean(r.is_custom), dirty: 0, updatedAt: iso(r.updated_at),
+})
+
 /** Postgres returns "2026-01-05T09:00:00+00:00"; normalize to JS ISO so local and remote compare equal. */
 function iso(v: unknown): string {
   return new Date(v as string).toISOString()
@@ -75,6 +90,7 @@ export async function pushDirty(db: PocketGainsDB, remote: Remote): Promise<numb
   n += await pushTable(db.sessions, 'session', sessionToRow, remote)
   n += await pushTable(db.sets, 'set_log', setToRow, remote)
   n += await pushTable(db.soreness, 'soreness_checkin', sorenessToRow, remote)
+  n += await pushTable(db.plans, 'weekly_plan', planToRow, remote)
   return n
 }
 
@@ -98,6 +114,7 @@ export async function pullAll(db: PocketGainsDB, remote: Remote): Promise<void> 
   await pullTable(db.sessions, 'session', sessionFromRow, remote)
   await pullTable(db.sets, 'set_log', setFromRow, remote)
   await pullTable(db.soreness, 'soreness_checkin', sorenessFromRow, remote)
+  await pullTable(db.plans, 'weekly_plan', planFromRow, remote)
 }
 
 // ---- background syncer ----

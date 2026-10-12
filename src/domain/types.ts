@@ -1,3 +1,5 @@
+import type { Weekday } from './dates'
+
 export type Movement = 'push' | 'pull' | 'squat' | 'hinge' | 'core' | 'isolation' | 'warmup'
 export type Equipment = 'bodyweight' | 'dumbbell' | 'band'
 export type Region = 'arms' | 'chest' | 'back' | 'shoulders' | 'core' | 'legs'
@@ -66,6 +68,12 @@ export interface Profile {
   equipment: Equipment[]
   petName: string
   petColor: PetColor
+  reminderEnabled: boolean
+  /** local time, HH:MM */
+  reminderTime: string
+  nudgeEnabled: boolean
+  /** weekdays scheduled in the plan in effect today; kept current by the app for the reminder server */
+  reminderDays: Weekday[]
   timezone: string
 }
 

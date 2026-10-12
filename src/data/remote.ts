@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
-export type RemoteTable = 'profile' | 'session' | 'set_log' | 'soreness_checkin'
+export type RemoteTable = 'profile' | 'session' | 'set_log' | 'soreness_checkin' | 'weekly_plan'
 export type Row = Record<string, unknown>
 
 export interface Remote {

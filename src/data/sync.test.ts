@@ -1,13 +1,14 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import { REST_WEEK } from '../domain/plan'
 import { makeProfile, makeSession } from '../domain/testFixtures'
 import { PocketGainsDB } from './db'
 import type { Remote, RemoteTable, Row } from './remote'
-import { addSetLogs, countDirty, createSession, getProfile, loadHistory, saveProfile, updateSession } from './repo'
+import { addSetLogs, countDirty, createSession, getProfile, loadHistory, loadPlans, savePlan, saveProfile, updateSession } from './repo'
 import { pullAll, pushDirty } from './sync'
 
 class FakeRemote implements Remote {
   tables: Record<RemoteTable, Map<string, Row>> = {
-    profile: new Map(), session: new Map(), set_log: new Map(), soreness_checkin: new Map(),
+    profile: new Map(), session: new Map(), set_log: new Map(), soreness_checkin: new Map(), weekly_plan: new Map(),
   }
   failOn: RemoteTable | null = null
   calls: RemoteTable[] = []
@@ -116,5 +117,18 @@ describe('pullAll', () => {
     await db.sessions.put({ ...local, dirty: 0 })
     await pullAll(db, remote)
     expect((await db.sessions.get(id))?.status).toBe('partial')
+  })
+
+  it('round-trips plans and reminder settings, normalizing Postgres time values', async () => {
+    await saveProfile(db, makeProfile({ reminderEnabled: true, reminderTime: '07:30', nudgeEnabled: true, reminderDays: ['mon', 'thu'] }))
+    await savePlan(db, { ...REST_WEEK, wed: 'lower' }, true, new Date(2026, 0, 14))
+    await pushDirty(db, remote)
+    expect(remote.tables.profile.get('me')).toMatchObject({ reminder_time: '07:30', reminder_days: ['mon', 'thu'] })
+    remote.tables.profile.set('me', { ...remote.tables.profile.get('me')!, reminder_time: '07:30:00' })
+
+    const fresh = new PocketGainsDB(`test-${crypto.randomUUID()}`)
+    await pullAll(fresh, remote)
+    expect(await getProfile(fresh)).toMatchObject({ reminderEnabled: true, reminderTime: '07:30', nudgeEnabled: true, reminderDays: ['mon', 'thu'] })
+    expect(await loadPlans(fresh)).toEqual(await loadPlans(db))
   })
 })

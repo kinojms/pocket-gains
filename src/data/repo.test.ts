@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { REST_WEEK } from '../domain/plan'
 import { startSession } from '../domain/session'
 import { makeProfile, makeSession } from '../domain/testFixtures'
 import { PocketGainsDB, type LocalProfile } from './db'
 import {
-  addSetLogs, addSoreness, countDirty, createSession, finalizeOrphans, getProfile, loadActive, loadHistory, logSetsAndSaveActive,
+  addSetLogs, addSoreness, countDirty, createSession, finalizeOrphans, getProfile, loadActive, loadHistory, logSetsAndSaveActive, loadPlans, savePlan,
   recoverStaleSession, saveActive, saveProfile, updateSession,
 } from './repo'
 
@@ -131,5 +132,20 @@ describe('finalizeOrphans', () => {
     expect(await finalizeOrphans(db, 14 * HOUR)).toBe(2)
     const byId = Object.fromEntries((await loadHistory(db)).sessions.map((s) => [s.id, s.status]))
     expect(byId).toEqual({ 'old-with-sets': 'partial', 'old-empty': 'abandoned', recent: 'in_progress', s1: 'in_progress' })
+  })
+})
+
+describe('plans', () => {
+  it('saves dated plan snapshots and loads them back', async () => {
+    const snap = await savePlan(db, { ...REST_WEEK, mon: 'push', thu: 'pull' }, true, new Date(2026, 0, 12, 20))
+    expect(snap).toMatchObject({ effectiveFrom: '2026-01-12', isCustom: true })
+    expect(await loadPlans(db)).toEqual([snap])
+    expect(await countDirty(db)).toBe(1)
+  })
+
+  it('reads profiles saved before reminders existed with reminders off', async () => {
+    const { reminderEnabled: _a, reminderTime: _b, nudgeEnabled: _c, reminderDays: _d, ...old } = makeProfile()
+    await db.profile.put({ ...old, id: 'me', dirty: 0, updatedAt: '2026-01-01T00:00:00.000Z' } as unknown as LocalProfile)
+    expect(await getProfile(db)).toMatchObject({ reminderEnabled: false, reminderTime: '18:00', nudgeEnabled: false, reminderDays: [] })
   })
 })

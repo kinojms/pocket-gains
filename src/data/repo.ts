@@ -1,3 +1,5 @@
+import { dateKey } from '../domain/dates'
+import type { PlanDays, PlanSnapshot } from '../domain/plan'
 import { RESUME_WINDOW_MS, type ActiveSession } from '../domain/session'
 import type { History, Profile, SessionRecord, SetLog, SetLogDraft } from '../domain/types'
 import type { LocalProfile, PocketGainsDB, SyncMeta } from './db'
@@ -27,6 +29,10 @@ function toProfile(row: LocalProfile): Profile {
     petName: row.petName,
     // profiles saved before pet colours existed
     petColor: row.petColor ?? 'mint',
+    reminderEnabled: row.reminderEnabled ?? false,
+    reminderTime: row.reminderTime ?? '18:00',
+    nudgeEnabled: row.nudgeEnabled ?? false,
+    reminderDays: row.reminderDays ?? [],
     timezone: row.timezone,
   }
 }
@@ -127,15 +133,27 @@ export async function recoverSessions(db: PocketGainsDB, now = Date.now()): Prom
   return result
 }
 
+export async function loadPlans(db: PocketGainsDB): Promise<PlanSnapshot[]> {
+  return (await db.plans.toArray()).map(strip)
+}
+
+export async function savePlan(db: PocketGainsDB, days: PlanDays, isCustom: boolean, today = new Date()): Promise<PlanSnapshot> {
+  const snap: PlanSnapshot = { id: crypto.randomUUID(), effectiveFrom: dateKey(today), savedAt: new Date().toISOString(), days, isCustom }
+  await db.plans.put({ ...snap, dirty: 1, updatedAt: stamp() })
+  return snap
+}
+
 export async function countDirty(db: PocketGainsDB): Promise<number> {
   const counts = await Promise.all(
-    [db.profile, db.sessions, db.sets, db.soreness].map((t) => t.where('dirty').equals(1).count()),
+    [db.profile, db.sessions, db.sets, db.soreness, db.plans].map((t) => t.where('dirty').equals(1).count()),
   )
   return counts.reduce((a, b) => a + b, 0)
 }
 
 export async function clearAll(db: PocketGainsDB): Promise<void> {
-  await db.transaction('rw', [db.profile, db.sessions, db.sets, db.soreness, db.kv], async () => {
-    await Promise.all([db.profile.clear(), db.sessions.clear(), db.sets.clear(), db.soreness.clear(), db.kv.clear()])
+  await db.transaction('rw', [db.profile, db.sessions, db.sets, db.soreness, db.plans, db.kv], async () => {
+    await Promise.all([
+      db.profile.clear(), db.sessions.clear(), db.sets.clear(), db.soreness.clear(), db.plans.clear(), db.kv.clear(),
+    ])
   })
 }

@@ -11,6 +11,7 @@ export function makeProfile(o: Partial<Profile> = {}): Profile {
     equipment: ['bodyweight', 'dumbbell', 'band'],
     petName: 'Biscuit',
     petColor: 'mint',
+    reminderEnabled: false, reminderTime: '18:00', nudgeEnabled: false, reminderDays: [],
     timezone: 'UTC',
     ...o,
   }
