@@ -36,6 +36,20 @@ describe('SummaryScreen', () => {
     expect(screen.queryByText(/How sore/)).toBeNull()
   })
 
+  it('celebrates a level up with a dismissable overlay', async () => {
+    const db = await makeTestDb(async (d) => {
+      await saveProfile(d, makeProfile({ experience: 'consistent', onboardedAt: new Date().toISOString() }))
+      await createSession(d, makeSession({ id: 's1', startedAt: new Date().toISOString(), status: 'complete' }))
+      await addSetLogs(d, 's1', [1, 2, 3].map((setNo) => ({ exerciseId: 'pushup', setNo, reps: 10, weightKg: null, stoppedForPain: false })))
+    })
+    const user = userEvent.setup()
+    renderRoutes(db, routes, ['/session/summary/s1'])
+    expect(await screen.findByRole('dialog', { name: 'Level up!' })).toBeInTheDocument() // 3×10 + 25 = 55 XP → Lv 2
+    await user.click(screen.getByRole('button', { name: 'Awesome!' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(screen.getByText('+55 XP')).toBeInTheDocument()
+  })
+
   it('treats a partial session kindly and asks for soreness during the on-ramp', async () => {
     const db = await seed('partial', 'new')
     const user = userEvent.setup()

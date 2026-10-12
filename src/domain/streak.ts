@@ -61,3 +61,9 @@ export function streakInfo(ctx: PlanContext, today: Date): StreakInfo {
   }
   return { current, best, shieldAvailable: !shieldWeeks.has(weekKey(today)), days }
 }
+
+/** Streak at `at` without and with one session: a larger `after` means this session extended it. */
+export function streakGain(ctx: PlanContext, sessionId: string, at: Date): { before: number; after: number } {
+  const without = { ...ctx.history, sessions: ctx.history.sessions.filter((s) => s.id !== sessionId) }
+  return { before: streakInfo({ ...ctx, history: without }, at).current, after: streakInfo(ctx, at).current }
+}

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { dateKey } from './dates'
 import { experienceChange, planFor, plannedDeckId, REST_WEEK, type PlanSnapshot } from './plan'
-import { countedDays, streakInfo } from './streak'
+import { countedDays, streakGain, streakInfo } from './streak'
 import { makeHistory, makeProfile, makeSession, makeSet } from './testFixtures'
 import type { History } from './types'
 
@@ -111,5 +111,17 @@ describe('changing experience', () => {
     const plans = [custom, ...withIds(experienceChange({ profile: fresh, history, plans: [custom] }, 'consistent', day(10)))]
     const ctx = { profile: { ...fresh, experience: 'consistent' as const }, history, plans }
     expect(planFor(day(11), ctx)).toEqual({ days: custom.days, isCustom: true })
+  })
+})
+
+describe('streakGain', () => {
+  it('compares the streak with and without one session', () => {
+    const profile = makeProfile({ onboardedAt: new Date(2026, 9, 5, 8).toISOString() }) // Monday
+    const settings = { sets: 1, cards: 1, rir: [1, 3] as [number, number], restSec: null, repRange: null }
+    const history = makeHistory({
+      sessions: [makeSession({ id: 's1', startedAt: new Date(2026, 9, 5, 12).toISOString(), status: 'complete', settings })],
+      sets: [makeSet({ sessionId: 's1', exerciseId: 'pushup', reps: 10 })],
+    })
+    expect(streakGain({ profile, history, plans: [] }, 's1', new Date(2026, 9, 5, 13))).toEqual({ before: 0, after: 1 })
   })
 })

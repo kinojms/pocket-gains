@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   // Home offers the day's planned deck; Monday is always a training day in the recommended plan.
   await page.clock.setFixedTime(new Date('2026-10-05T10:00:00'))
 })
@@ -37,6 +38,7 @@ test('first session end to end: onboarding, full hand, summary, level up, progre
 
   await expect(page.getByRole('heading', { name: 'Hand cleared!' })).toBeVisible()
   await expect(page.getByText('+55 XP')).toBeVisible()
+  await page.getByRole('button', { name: 'Awesome!' }).click()
   await page.getByRole('button', { name: 'Done' }).click()
   await expect(page.getByText(/Lv 2/)).toBeVisible()
 

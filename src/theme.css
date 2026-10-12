@@ -94,10 +94,6 @@ a.choice { text-decoration: none; }
 .sources summary { cursor: pointer; color: var(--text-muted); font-size: 13px; }
 .sources ul { font-size: 12px; color: var(--text-muted); padding-left: 18px; }
 
-/* legacy:pet */
-.pet-stage { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px 0 8px; background: radial-gradient(circle at 50% 60%, var(--surface-2), var(--bg) 70%); border-radius: var(--radius); }
-/* end legacy:pet */
-
 /* legacy:decks */
 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
 .unavailable { opacity: 0.45; }
@@ -258,3 +254,20 @@ a.choice { text-decoration: none; }
 .avoid-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
 .avoid-list li { display: flex; gap: 6px; align-items: center; }
 .reason { align-items: center; }
+
+/* summary */
+.summary .meadow-pet { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.summary-pills { gap: 10px; flex-wrap: wrap; }
+.xp-chip { font-family: var(--font-display); font-size: 20px; padding: 4px 14px; background: color-mix(in srgb, var(--gold) 30%, var(--panel)); border-color: var(--gold-base); }
+.summary-count { font-family: var(--font-display); font-size: 20px; }
+.soreness { align-items: stretch; }
+.soreness-btn { flex: 1; flex-direction: column; gap: 4px; font-size: 14px; padding: 10px 6px; }
+.levelup { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(10, 14, 40, 0.6); animation: fade-in 0.25s ease-out; }
+.levelup-card { position: relative; width: 100%; max-width: 340px; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 28px 20px 20px; border-radius: 28px; background: var(--panel); color: var(--text); border: 3px solid var(--gold); box-shadow: 0 6px 0 var(--gold-base); text-align: center; animation: pop-in 0.5s cubic-bezier(0.3, 1.6, 0.5, 1); }
+.levelup-card h2 { font-size: 30px; }
+.levelup-burst { position: absolute; top: -22px; display: flex; gap: 8px; color: var(--gold-base); }
+.levelup-pet { animation: grow 1.2s ease-in-out infinite alternate; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop-in { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes grow { from { transform: scale(1); } to { transform: scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .levelup-card, .levelup-pet { animation: none; } }
