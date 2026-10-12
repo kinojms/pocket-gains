@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 import { SOURCES } from '../content/sources'
 import { useAppData } from '../data/AppData'
 import { saveProfile } from '../data/repo'
@@ -87,6 +88,8 @@ function ProfileForm({ initial }: { initial: Profile }) {
 
       <button className="btn btn-primary btn-block" onClick={() => void save()}>Save changes</button>
       {saved && <p role="status">Saved ✓</p>}
+
+      <Link className="btn btn-ghost center-text" to="/plan">Edit my week</Link>
 
       <details className="panel">
         <summary>About the science</summary>

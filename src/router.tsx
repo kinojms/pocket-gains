@@ -8,6 +8,7 @@ import { NewSessionScreen } from './screens/NewSessionScreen'
 import { OnboardingScreen } from './screens/OnboardingScreen'
 import { PlayScreen } from './screens/PlayScreen'
 import { ProfileScreen } from './screens/ProfileScreen'
+import { PlanScreen } from './screens/PlanScreen'
 import { ProgressScreen } from './screens/ProgressScreen'
 import { SummaryScreen } from './screens/SummaryScreen'
 import { TabBar } from './ui/TabBar'
@@ -75,6 +76,7 @@ export const router = createHashRouter([
               { path: 'decks', element: <DecksScreen /> },
               { path: 'progress', element: <ProgressScreen /> },
               { path: 'profile', element: <ProfileScreen /> },
+              { path: 'plan', element: <PlanScreen /> },
             ],
           },
           { path: '/session/new/:deckId', element: <NewSessionScreen /> },
