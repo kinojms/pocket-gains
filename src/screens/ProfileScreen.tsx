@@ -2,11 +2,14 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { SOURCES } from '../content/sources'
 import { useAppData } from '../data/AppData'
+import { subscribePush, unsubscribePush } from '../data/push'
 import { saveProfile } from '../data/repo'
+import { supabase } from '../data/supabase'
 import type { Equipment, Profile } from '../domain/types'
 import { PetColorPicker } from '../ui/PetColorPicker'
 import { PetSprite } from '../ui/PetSprite'
 import { EXPERIENCES, OPTIONAL_EQUIPMENT } from '../ui/profileOptions'
+import { RemindersSection, type ReminderSettings } from '../ui/RemindersSection'
 
 export function ProfileScreen() {
   const { profile } = useAppData()
@@ -41,6 +44,12 @@ function ProfileForm({ initial }: { initial: Profile }) {
     })
     await afterWrite()
     setSaved(true)
+  }
+
+  async function saveReminders(v: ReminderSettings) {
+    const latest = profile ?? initial
+    await saveProfile(db, { ...latest, ...v })
+    await afterWrite()
   }
 
   async function doSignOut() {
@@ -90,6 +99,15 @@ function ProfileForm({ initial }: { initial: Profile }) {
       {saved && <p role="status">Saved ✓</p>}
 
       <Link className="btn btn-ghost center-text" to="/plan">Edit my week</Link>
+
+      {mode === 'cloud' && supabase && profile && (
+        <RemindersSection
+          value={{ reminderEnabled: profile.reminderEnabled, reminderTime: profile.reminderTime, nudgeEnabled: profile.nudgeEnabled }}
+          onChange={(v) => void saveReminders(v)}
+          subscribe={() => subscribePush(supabase!, import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined)}
+          unsubscribe={() => unsubscribePush(supabase!)}
+        />
+      )}
 
       <details className="panel">
         <summary>About the science</summary>

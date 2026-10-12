@@ -31,7 +31,7 @@ export interface EndEarlySuggestion {
 const SUGGESTIONS: Record<Exclude<EndReason, 'other'>, string> = {
   no_time: 'Short on time lately? Try 3 cards per session in setup. A short session still counts.',
   too_hard: 'These sessions have felt too hard. For the next week, try 2 sets and stop 3–4 reps before failure.',
-  tired: "Feeling tired a lot? Try training earlier in the day, and aim for 7+ hours of sleep.",
+  tired: 'Feeling tired a lot? Try moving your reminder earlier (Profile → Reminders), and aim for 7+ hours of sleep.',
 }
 
 export function endEarlySuggestion(history: History): EndEarlySuggestion | null {

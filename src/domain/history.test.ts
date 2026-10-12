@@ -68,6 +68,11 @@ describe('endEarlySuggestion', () => {
     const h = makeHistory({ sessions: [partial(1, 'other'), partial(2, 'other'), partial(3, 'other')] })
     expect(endEarlySuggestion(h)).toBeNull()
   })
+
+  it('suggests moving the reminder earlier after repeated tired sessions', () => {
+    const h = makeHistory({ sessions: [partial(1, 'tired'), partial(2, 'tired'), partial(3, 'tired')] })
+    expect(endEarlySuggestion(h)?.message).toMatch(/reminder earlier \(Profile → Reminders\)/)
+  })
 })
 
 describe('trainedToday / recentSessions', () => {
