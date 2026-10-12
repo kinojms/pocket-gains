@@ -3,7 +3,7 @@ import { startSession } from '../domain/session'
 import { makeProfile, makeSession } from '../domain/testFixtures'
 import { PocketGainsDB, type LocalProfile } from './db'
 import {
-  addSetLogs, addSoreness, countDirty, createSession, getProfile, loadActive, loadHistory, logSetsAndSaveActive,
+  addSetLogs, addSoreness, countDirty, createSession, finalizeOrphans, getProfile, loadActive, loadHistory, logSetsAndSaveActive,
   recoverStaleSession, saveActive, saveProfile, updateSession,
 } from './repo'
 
@@ -116,5 +116,20 @@ describe('logSetsAndSaveActive', () => {
     ).rejects.toThrow()
     expect((await loadHistory(db)).sets).toHaveLength(1)
     expect((await loadActive(db))?.phase).toBe('rest')
+  })
+})
+
+describe('finalizeOrphans', () => {
+  it('finalizes old in-progress sessions that are not the active one (e.g. synced from another device)', async () => {
+    await createSession(db, makeSession({ id: 'old-with-sets', startedAt: new Date(0).toISOString(), status: 'in_progress', endedAt: null }))
+    await addSetLogs(db, 'old-with-sets', [{ exerciseId: 'pushup', setNo: 1, reps: 8, weightKg: null, stoppedForPain: false }])
+    await createSession(db, makeSession({ id: 'old-empty', startedAt: new Date(0).toISOString(), status: 'in_progress', endedAt: null }))
+    await createSession(db, makeSession({ id: 'recent', startedAt: new Date(13 * HOUR).toISOString(), status: 'in_progress', endedAt: null }))
+    await createSession(db, makeSession({ id: 's1', startedAt: new Date(0).toISOString(), status: 'in_progress', endedAt: null }))
+    await saveActive(db, active(0, 's1'))
+
+    expect(await finalizeOrphans(db, 14 * HOUR)).toBe(2)
+    const byId = Object.fromEntries((await loadHistory(db)).sessions.map((s) => [s.id, s.status]))
+    expect(byId).toEqual({ 'old-with-sets': 'partial', 'old-empty': 'abandoned', recent: 'in_progress', s1: 'in_progress' })
   })
 })

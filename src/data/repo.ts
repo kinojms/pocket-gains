@@ -109,6 +109,24 @@ export async function recoverStaleSession(db: PocketGainsDB, now = Date.now()): 
   return 'finalized'
 }
 
+export async function finalizeOrphans(db: PocketGainsDB, now = Date.now()): Promise<number> {
+  const active = await loadActive(db)
+  const stale = (await db.sessions.where('status').equals('in_progress').toArray()).filter(
+    (s) => s.id !== active?.sessionId && now - Date.parse(s.startedAt) > RESUME_WINDOW_MS,
+  )
+  for (const s of stale) {
+    const sets = await db.sets.where('sessionId').equals(s.id).count()
+    await updateSession(db, s.id, { status: sets > 0 ? 'partial' : 'abandoned', endedAt: new Date(now).toISOString() })
+  }
+  return stale.length
+}
+
+export async function recoverSessions(db: PocketGainsDB, now = Date.now()): Promise<RecoveryResult> {
+  const result = await recoverStaleSession(db, now)
+  await finalizeOrphans(db, now)
+  return result
+}
+
 export async function countDirty(db: PocketGainsDB): Promise<number> {
   const counts = await Promise.all(
     [db.profile, db.sessions, db.sets, db.soreness].map((t) => t.where('dirty').equals(1).count()),

@@ -5,7 +5,7 @@ import type { PullState } from '../gate'
 import { PetColorContext } from '../ui/petColor'
 import { db as defaultDb, type PocketGainsDB } from './db'
 import { supabaseRemote } from './remote'
-import { clearAll, countDirty, getProfile, loadActive, loadHistory, recoverStaleSession } from './repo'
+import { clearAll, countDirty, getProfile, loadActive, loadHistory, recoverSessions } from './repo'
 import { supabase } from './supabase'
 import { createSyncer, pullAll } from './sync'
 
@@ -86,9 +86,20 @@ export function AppDataProvider({ children, database = defaultDb }: { children: 
     [database, refresh],
   )
 
-  // Startup: finalize sessions older than 12 h, then load.
+  // Finalize sessions older than 12 h, at startup and whenever the app comes back to the foreground.
+  // Recovery failing must never keep the app on "Loading…".
   useEffect(() => {
-    void recoverStaleSession(database).then(refresh)
+    const run = () => {
+      void recoverSessions(database)
+        .catch((e: unknown) => console.warn('session recovery failed', e))
+        .finally(() => void refresh())
+    }
+    run()
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') run()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
   }, [database, refresh])
 
   // Auth state (cloud mode only).
