@@ -25,3 +25,4 @@ dist-ssr
 .superpowers/
 test-results/
 playwright-report/
+supabase/.temp/

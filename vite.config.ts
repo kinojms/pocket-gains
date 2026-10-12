@@ -22,8 +22,8 @@ export default defineConfig({
         scope: '/pocket-gains/',
         display: 'standalone',
         orientation: 'portrait',
-        background_color: '#1e2433',
-        theme_color: '#1e2433',
+        background_color: '#eef7fd',
+        theme_color: '#8fd3ff',
         icons: [
           { src: 'pwa-64x64.png', sizes: '64x64', type: 'image/png' },
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
