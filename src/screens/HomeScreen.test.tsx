@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createSession, saveActive, saveProfile } from '../data/repo'
 import { startSession } from '../domain/session'
 import { makeProfile, makeSession } from '../domain/testFixtures'
@@ -9,6 +9,13 @@ import { HomeScreen } from './HomeScreen'
 const routes = [{ path: '/', element: <HomeScreen /> }]
 
 describe('HomeScreen', () => {
+  // Home depends on the weekday: pin Date only (timers stay real so Testing Library can wait).
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date(2026, 9, 5, 10)) // Monday
+  })
+  afterEach(() => vi.useRealTimers())
+
   it('shows the pet, level and a deal button for the suggested deck', async () => {
     const db = await makeTestDb((d) => saveProfile(d, makeProfile({ petName: 'Mochi' })))
     renderRoutes(db, routes, ['/'])
@@ -31,5 +38,22 @@ describe('HomeScreen', () => {
     renderRoutes(db, routes, ['/'])
     expect(await screen.findByRole('link', { name: /Resume session/ })).toHaveAttribute('href', '/session/play')
     expect(screen.queryByRole('link', { name: /Deal my hand/ })).toBeNull()
+  })
+
+  it('shows the streak and shield in the header', async () => {
+    const db = await makeTestDb((d) => saveProfile(d, makeProfile()))
+    renderRoutes(db, routes, ['/'])
+    expect(await screen.findByLabelText('0-day streak')).toBeInTheDocument()
+    expect(screen.getByText(/Shield ready/)).toBeInTheDocument()
+  })
+
+  it('on a rest day, offers the next planned deck instead', async () => {
+    vi.setSystemTime(new Date(2026, 9, 7, 10)) // Wednesday: rest in the 4-day plan; Thursday is Pull
+    const db = await makeTestDb((d) => saveProfile(d, makeProfile()))
+    renderRoutes(db, routes, ['/'])
+    expect(await screen.findByText('Rest day')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Train anyway/ })).toHaveAttribute('href', '/session/new/pull')
+    expect(screen.queryByRole('link', { name: /Deal my hand/ })).toBeNull()
+    expect(screen.getByRole('link', { name: /Edit my week/ })).toHaveAttribute('href', '/plan')
   })
 })

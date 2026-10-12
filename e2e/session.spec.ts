@@ -1,5 +1,10 @@
 import { expect, test, type Page } from '@playwright/test'
 
+test.beforeEach(async ({ page }) => {
+  // Home offers the day's planned deck; Monday is always a training day in the recommended plan.
+  await page.clock.setFixedTime(new Date('2026-10-05T10:00:00'))
+})
+
 async function onboard(page: Page, experience: RegExp) {
   await page.goto('./')
   await page.getByRole('checkbox', { name: /I understand/ }).check()
