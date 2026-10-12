@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { imageUrl } from '../content'
 import { repRangeFor, restSecFor } from '../domain/session'
 import type { Exercise, SessionSettings } from '../domain/types'
-import { PetSprite } from './PetSprite'
+import { Pet } from './Pet'
 
 const MOVEMENT: Record<Exercise['movement'], string> = {
   push: 'Push', pull: 'Pull', squat: 'Squat', hinge: 'Hinge', core: 'Core', isolation: 'Isolation', warmup: 'Warm-up',
@@ -22,7 +22,7 @@ export function TcgCard({ exercise, settings, children }: { exercise: Exercise; 
             {'★'.repeat(exercise.rarity)}{'☆'.repeat(3 - exercise.rarity)}
           </span>
         </header>
-        <div className="tcg-art">{img ? <img src={img} alt="" loading="lazy" /> : <PetSprite size={72} />}</div>
+        <div className="tcg-art">{img ? <img src={img} alt="" loading="lazy" /> : <Pet size={72} />}</div>
         <div className="tcg-type">
           {MOVEMENT[exercise.movement]} · {exercise.muscles.primary.join(' / ')} · {EQUIPMENT[exercise.equipment]}
         </div>

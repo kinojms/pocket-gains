@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { imageUrl, videoUrl } from '../../content'
 import { repRangeFor, restSecFor } from '../../domain/session'
 import type { Exercise, SessionSettings } from '../../domain/types'
-import { PetSprite } from '../../ui/PetSprite'
+import { Pet } from '../../ui/Pet'
 
 export function TutorialView({ exercise, settings, mode, readyLabel, onReady }: {
   exercise: Exercise
@@ -22,7 +22,7 @@ export function TutorialView({ exercise, settings, mode, readyLabel, onReady }: 
       </span>
       {expanded ? (
         <>
-          <div className="demo">{img ? <img src={img} alt={`${exercise.name} demonstration`} /> : <PetSprite size={120} />}</div>
+          <div className="demo">{img ? <img src={img} alt={`${exercise.name} demonstration`} /> : <Pet size={120} />}</div>
           <a className="btn btn-ghost center-text" href={videoUrl(exercise)} target="_blank" rel="noreferrer">▶ Watch full tutorial</a>
           <div>
             <strong>How to</strong>

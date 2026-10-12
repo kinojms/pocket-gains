@@ -1,7 +1,7 @@
 import { imageUrl } from '../../content'
 import type { Exercise } from '../../domain/types'
 import { formatClock } from '../../ui/format'
-import { PetSprite } from '../../ui/PetSprite'
+import { Pet } from '../../ui/Pet'
 
 const CIRCUMFERENCE = 2 * Math.PI * 42
 
@@ -20,7 +20,7 @@ export function RestView({ exercise, remaining, totalMs, lastReps, range, nextLa
   return (
     <section className="stack play">
       <div className="ref">
-        {img ? <img src={img} alt="" /> : <PetSprite size={48} />}
+        {img ? <img src={img} alt="" /> : <Pet size={48} />}
         {lastReps !== null && (
           <span>
             Last set: <b>{lastReps} reps</b>{' '}

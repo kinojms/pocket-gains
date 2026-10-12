@@ -8,7 +8,7 @@ import { supabase } from '../data/supabase'
 import { experienceChange } from '../domain/plan'
 import type { Equipment, Profile } from '../domain/types'
 import { PetColorPicker } from '../ui/PetColorPicker'
-import { PetSprite } from '../ui/PetSprite'
+import { Pet } from '../ui/Pet'
 import { EXPERIENCES, OPTIONAL_EQUIPMENT } from '../ui/profileOptions'
 import { RemindersSection, type ReminderSettings } from '../ui/RemindersSection'
 
@@ -95,7 +95,7 @@ function ProfileForm({ initial }: { initial: Profile }) {
         <input type="text" maxLength={20} value={draft.petName} onChange={(e) => edit({ petName: e.target.value })} />
       </label>
       <div className="row" style={{ alignItems: 'center', gap: 12 }}>
-        <PetSprite size={72} color={draft.petColor} />
+        <Pet size={72} color={draft.petColor} />
         <PetColorPicker value={draft.petColor} onChange={(petColor) => edit({ petColor })} />
       </div>
 

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { imageUrl } from '../../content'
 import { repRangeFor } from '../../domain/session'
 import type { Exercise, SessionSettings } from '../../domain/types'
-import { PetSprite } from '../../ui/PetSprite'
+import { Pet } from '../../ui/Pet'
 
 export function SetView({ exercise, settings, setNo, initialReps, initialWeight, onLog, onHurt, onShowTutorial }: {
   exercise: Exercise
@@ -26,7 +26,7 @@ export function SetView({ exercise, settings, setNo, initialReps, initialWeight,
         <span className="muted">Set {setNo} / {settings.sets}</span>
       </div>
       <button className="ref" onClick={onShowTutorial}>
-        {img ? <img src={img} alt="" /> : <PetSprite size={48} />}
+        {img ? <img src={img} alt="" /> : <Pet size={48} />}
         <span className="stack" style={{ gap: 2 }}>
           <span>💡 {exercise.cues[0]}</span>
           <span className="muted">Tap for the full tutorial</span>

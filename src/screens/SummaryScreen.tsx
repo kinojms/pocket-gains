@@ -6,7 +6,7 @@ import { addSoreness } from '../data/repo'
 import { recommendDefaults } from '../domain/defaults'
 import { endEarlySuggestion } from '../domain/history'
 import { countsForXp, levelFromXp, petLine, sessionXp, totalXp } from '../domain/pet'
-import { PetSprite } from '../ui/PetSprite'
+import { Pet } from '../ui/Pet'
 
 const SORENESS: { rating: 1 | 2 | 3; label: string }[] = [
   { rating: 1, label: '😀 Fine' },
@@ -49,7 +49,7 @@ export function SummaryScreen() {
       <h1>{complete ? 'Hand cleared!' : 'Session saved'}</h1>
       <section className="pet-stage">
         <div className="bubble">{petLine(moment, session.id)}</div>
-        <PetSprite size={140} bounce />
+        <Pet size={140} mood="proud" />
         <strong>{profile.petName} · Lv {after.level}{leveledUp ? ' ⬆' : ''}</strong>
         <span className="chip">+{gained} XP</span>
       </section>

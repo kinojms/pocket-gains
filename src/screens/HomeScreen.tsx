@@ -10,7 +10,7 @@ import { suggestNextDeck } from '../domain/recommender'
 import { countedDays, streakInfo } from '../domain/streak'
 import type { Deck } from '../domain/types'
 import { useNow } from '../hooks/useNow'
-import { PetSprite } from '../ui/PetSprite'
+import { Pet } from '../ui/Pet'
 
 export function HomeScreen() {
   const { profile, history, plans, active } = useAppData()
@@ -46,7 +46,7 @@ export function HomeScreen() {
       </div>
       <section className="pet-stage">
         <div className="bubble">{line}</div>
-        <PetSprite size={200} bounce />
+        <Pet size={200} />
         <strong>{profile.petName} · Lv {level}</strong>
         <div className="xpbar" aria-label={`${xpIntoLevel} of ${xpForNext} XP to next level`}>
           <div style={{ width: `${(xpIntoLevel / xpForNext) * 100}%` }} />

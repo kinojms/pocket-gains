@@ -4,7 +4,7 @@ import { useAppData } from '../data/AppData'
 import { saveProfile } from '../data/repo'
 import type { Equipment, Experience, PetColor } from '../domain/types'
 import { PetColorPicker } from '../ui/PetColorPicker'
-import { PetSprite } from '../ui/PetSprite'
+import { Pet } from '../ui/Pet'
 import { EXPERIENCES, OPTIONAL_EQUIPMENT } from '../ui/profileOptions'
 
 export function OnboardingScreen() {
@@ -95,7 +95,7 @@ export function OnboardingScreen() {
       {step === 3 && (
         <section className="stack" style={{ alignItems: 'center', textAlign: 'center' }}>
           <h2>Meet your training buddy</h2>
-          <PetSprite size={180} bounce color={petColor} />
+          <Pet size={180} mood="excited" color={petColor} />
           <label className="stack" style={{ width: '100%' }}>
             <span className="label">Pet name</span>
             <input type="text" value={petName} maxLength={20} onChange={(e) => setPetName(e.target.value)} />

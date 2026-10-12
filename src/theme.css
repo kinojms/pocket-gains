@@ -95,9 +95,6 @@ a.choice { text-decoration: none; }
 .sources ul { font-size: 12px; color: var(--text-muted); padding-left: 18px; }
 
 /* legacy:pet */
-@keyframes pet-squish { 0%, 100% { transform: translateY(0) scale(1, 1); } 40% { transform: translateY(-6px) scale(0.96, 1.04); } 80% { transform: translateY(0) scale(1.06, 0.94); } }
-.pet-squish { animation: pet-squish 1.8s ease-in-out infinite; transform-origin: 50% 90%; }
-@media (prefers-reduced-motion: reduce) { .pet-squish { animation: none; } }
 .pet-stage { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px 0 8px; background: radial-gradient(circle at 50% 60%, var(--surface-2), var(--bg) 70%); border-radius: var(--radius); }
 /* end legacy:pet */
 
@@ -178,4 +175,60 @@ a.choice { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .pill.pop { animation: none; }
   .xpbar-fill, .ring-fill { transition: none; }
+}
+
+/* pet */
+.pet { position: relative; display: inline-block; flex: none; color: var(--text); }
+.pet[data-tappable='true'] { cursor: pointer; }
+.pet svg { display: block; overflow: visible; }
+.pet-body, .pet-eyes { transform-box: view-box; }
+.pet-body { transform-origin: 50% 92%; animation: pet-breathe 3.2s ease-in-out infinite; }
+.pet-eyes { transform-origin: 50% 58%; animation: pet-blink 5s infinite; animation-delay: var(--blink-delay, 0s); }
+.pet-pupils { animation: pet-look 9s ease-in-out infinite; }
+.pet-jump .pet-body { animation: pet-jump 0.6s cubic-bezier(0.3, 1.6, 0.5, 1); }
+.pet-z text { animation: pet-z 2.4s ease-in infinite; }
+.pet-z text + text { animation-delay: 1.2s; }
+.pet-sparkles path { transform-box: fill-box; transform-origin: center; animation: pet-twinkle 1.6s ease-in-out infinite; }
+@keyframes pet-breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.03, 0.97); } }
+@keyframes pet-blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }
+@keyframes pet-look { 0%, 40%, 100% { transform: translateX(0); } 45%, 55% { transform: translateX(-1.6px); } 60%, 70% { transform: translateX(1.6px); } }
+@keyframes pet-jump { 0% { transform: translateY(0); } 30% { transform: translateY(-14px) scale(0.94, 1.08); } 60% { transform: translateY(0) scale(1.08, 0.92); } 100% { transform: none; } }
+@keyframes pet-z { 0% { opacity: 0; transform: translate(0, 4px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(4px, -8px); } }
+@keyframes pet-twinkle { 0%, 100% { opacity: 0.4; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.1); } }
+
+/* meadow */
+.meadow { position: relative; overflow: hidden; display: flex; flex-direction: column; padding: 12px 12px 22px; border-radius: 24px; background: linear-gradient(180deg, var(--sky-top), var(--sky-bottom)); }
+.meadow-sky, .meadow-hill { position: absolute; pointer-events: none; }
+.meadow-sky { inset: 0; }
+.meadow-sun { position: absolute; top: 18px; right: 26px; width: 46px; height: 46px; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 10px color-mix(in srgb, var(--sun) 25%, transparent); }
+:root[data-phase='morning'] .meadow-sun { top: 42%; left: 20px; right: auto; }
+:root[data-phase='sunset'] .meadow-sun { top: 48%; }
+:root[data-phase='night'] .meadow-sun { width: 34px; height: 34px; background: transparent; box-shadow: inset -9px -3px 0 0 var(--sun); }
+.meadow-cloud { position: absolute; height: 18px; border-radius: 999px; background: rgba(255, 255, 255, 0.92); animation: cloud-drift 40s linear infinite alternate; }
+.meadow-cloud::before { content: ''; position: absolute; left: 18%; bottom: 30%; width: 55%; height: 170%; border-radius: 50%; background: inherit; }
+.c1 { width: 70px; top: 34px; left: 10%; }
+.c2 { width: 50px; top: 74px; left: 55%; animation-duration: 55s; }
+.c3 { width: 40px; top: 18px; left: 40%; animation-duration: 70s; opacity: 0.7; }
+:root[data-phase='sunset'] .meadow-cloud { background: rgba(255, 214, 224, 0.92); }
+:root[data-phase='night'] .meadow-cloud { display: none; }
+.meadow-stars {
+  display: none; position: absolute; inset: 0 0 40% 0; animation: twinkle 3s ease-in-out infinite alternate;
+  background-image:
+    radial-gradient(1.6px 1.6px at 12% 20%, #fff 50%, transparent 52%), radial-gradient(1.4px 1.4px at 30% 55%, #fff 50%, transparent 52%),
+    radial-gradient(1.8px 1.8px at 48% 14%, #fff 50%, transparent 52%), radial-gradient(1.3px 1.3px at 63% 40%, #fff 50%, transparent 52%),
+    radial-gradient(1.6px 1.6px at 82% 62%, #fff 50%, transparent 52%), radial-gradient(1.2px 1.2px at 90% 12%, #fff 50%, transparent 52%);
+}
+:root[data-phase='night'] .meadow-stars { display: block; }
+.meadow-hill { left: -15%; right: -15%; bottom: -64px; height: 150px; border-radius: 50%; background: var(--grass); box-shadow: inset 0 10px 0 color-mix(in srgb, var(--grass) 70%, white); }
+.tuft { position: absolute; width: 14px; height: 10px; border-radius: 10px 10px 0 0; background: var(--grass-dark); }
+.t1 { top: 20px; left: 28%; }
+.t2 { top: 26px; left: 68%; }
+.flower { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 3px #ffd34d; }
+.f1 { top: 32px; left: 36%; }
+.f2 { top: 22px; left: 61%; }
+.meadow-content { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+@keyframes cloud-drift { from { transform: translateX(-20px); } to { transform: translateX(30px); } }
+@keyframes twinkle { from { opacity: 0.5; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .pet-body, .pet-pupils, .pet-z text, .pet-sparkles path, .pet-jump .pet-body, .meadow-cloud, .meadow-stars { animation: none; }
 }

@@ -20,5 +20,5 @@ export const PET_PALETTES: Record<PetColor, PetPalette> = {
 
 export const PET_COLORS = Object.keys(PET_PALETTES) as PetColor[]
 
-/** The signed-in user's pet colour; PetSprite falls back to this when no colour prop is given. */
+/** The signed-in user's pet colour; Pet falls back to this when no colour prop is given. */
 export const PetColorContext = createContext<PetColor>('mint')
