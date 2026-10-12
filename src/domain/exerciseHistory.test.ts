@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { exerciseHistory, trainedExercises } from './exerciseHistory'
+import { bestSeries, exerciseHistory, trainedExercises } from './exerciseHistory'
 import { makeHistory, makeSession, makeSet } from './testFixtures'
 
 const h = makeHistory({
@@ -39,5 +39,25 @@ describe('trainedExercises', () => {
       { exerciseId: 'db-curl', sessions: 2, lastAt: '2026-01-08T09:00:00.000Z' },
       { exerciseId: 'pushup', sessions: 1, lastAt: '2026-01-08T09:00:00.000Z' },
     ])
+  })
+})
+
+describe('bestSeries', () => {
+  it('charts best weight when every session has one, else best reps, oldest first', () => {
+    const history = makeHistory({
+      sessions: [
+        makeSession({ id: 'a', startedAt: '2026-01-05T09:00:00.000Z' }),
+        makeSession({ id: 'b', startedAt: '2026-01-07T09:00:00.000Z' }),
+      ],
+      sets: [
+        makeSet({ sessionId: 'a', exerciseId: 'db-curl', reps: 10, weightKg: 8 }),
+        makeSet({ sessionId: 'b', exerciseId: 'db-curl', reps: 9, weightKg: 10 }),
+        makeSet({ sessionId: 'a', exerciseId: 'pushup', reps: 8, weightKg: null }),
+        makeSet({ sessionId: 'b', exerciseId: 'pushup', reps: 11, weightKg: null }),
+      ],
+    })
+    expect(bestSeries('db-curl', history)).toEqual({ values: [8, 10], byWeight: true })
+    expect(bestSeries('pushup', history)).toEqual({ values: [8, 11], byWeight: false })
+    expect(bestSeries('squat', history)).toEqual({ values: [], byWeight: false })
   })
 })

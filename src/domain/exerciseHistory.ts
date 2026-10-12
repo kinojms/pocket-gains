@@ -52,3 +52,10 @@ export function trainedExercises(history: History): TrainedExercise[] {
   }
   return [...byId.values()].sort((a, b) => b.lastAt.localeCompare(a.lastAt))
 }
+
+/** Chart data: best weight per session if every session has one, else best reps; oldest first, last `max` sessions. */
+export function bestSeries(exerciseId: string, history: History, max = 12): { values: number[]; byWeight: boolean } {
+  const chrono = [...exerciseHistory(exerciseId, history)].reverse().slice(-max)
+  const byWeight = chrono.length > 0 && chrono.every((e) => e.bestWeight !== null)
+  return { values: chrono.map((e) => (byWeight ? e.bestWeight! : e.bestReps)), byWeight }
+}

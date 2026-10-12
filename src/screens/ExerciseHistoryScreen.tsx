@@ -1,7 +1,9 @@
 import { Link, useParams } from 'react-router'
 import { content } from '../content'
 import { useAppData } from '../data/AppData'
-import { exerciseHistory } from '../domain/exerciseHistory'
+import { bestSeries, exerciseHistory } from '../domain/exerciseHistory'
+import { Icon } from '../ui/Icon'
+import { RarityCard } from '../ui/RarityCard'
 import { Sparkline } from '../ui/Sparkline'
 
 export function ExerciseHistoryScreen() {
@@ -11,23 +13,22 @@ export function ExerciseHistoryScreen() {
   if (!profile) return null
   const exercise = content.exercises[exerciseId]
   const entries = exerciseHistory(exerciseId, history)
-  const chrono = [...entries].reverse().slice(-12)
-  const byWeight = chrono.every((e) => e.bestWeight !== null) && chrono.length > 0
-  const values = chrono.map((e) => (byWeight ? e.bestWeight! : e.bestReps))
+  const { values, byWeight } = bestSeries(exerciseId, history)
   const unit = byWeight ? ' kg' : ' reps'
   const label = `${byWeight ? 'Best weight' : 'Best reps'}: ${values[0]}${unit} → ${values[values.length - 1]}${unit}`
 
   return (
     <main className="screen">
-      <Link className="muted" to="/progress">‹ Progress</Link>
+      <Link className="row back-link" to="/progress"><Icon name="chevron-left" size={18} /> Progress</Link>
       <h1>{exercise?.name ?? exerciseId}</h1>
+      {exercise && <div className="history-card"><RarityCard exercise={exercise} size="mini" /></div>}
       {entries.length === 0 ? (
         <p className="muted">No sets logged for this exercise yet.</p>
       ) : (
         <>
           <section className="panel stack">
             <span className="label">{byWeight ? 'Best weight per session' : 'Best reps per session'}</span>
-            <Sparkline values={values} label={label} />
+            <Sparkline values={values} label={label} width={300} height={90} />
           </section>
           <section className="stack">
             {entries.map((e) => (

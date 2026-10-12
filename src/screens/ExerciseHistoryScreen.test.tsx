@@ -18,7 +18,7 @@ describe('ExerciseHistoryScreen', () => {
       ])
     })
     renderRoutes(db, [{ path: '/progress/exercise/:exerciseId', element: <ExerciseHistoryScreen /> }], ['/progress/exercise/db-curl'])
-    expect(await screen.findByRole('heading', { name: 'Dumbbell Biceps Curl' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Dumbbell Biceps Curl' })).toBeInTheDocument()
     expect(screen.getByRole('img', { name: 'Best weight: 8 kg → 10 kg' })).toBeInTheDocument()
     expect(screen.getByText('9×10 kg · 8×10 kg')).toBeInTheDocument()
     expect(screen.getByText('10×8 kg')).toBeInTheDocument()
