@@ -4,6 +4,7 @@ import { content } from '../content'
 import { useAppData } from '../data/AppData'
 import { addSetLogs, loadActive, logSetsAndSaveActive, saveActive, updateSession } from '../data/repo'
 import { lastWeightFor, tutorialMode } from '../domain/history'
+import { feedback } from '../feedback/feedback'
 import { remainingMs, repRangeFor, restSecFor, step, type ActiveSession, type SessionAction } from '../domain/session'
 import { useNow } from '../hooks/useNow'
 import { useWakeLock } from '../hooks/useWakeLock'
@@ -85,7 +86,7 @@ function Player({ initial }: { initial: ActiveSession }) {
   const restOver = state.phase === 'rest' && remainingMs(state.restEndsAt, now) === 0
   useEffect(() => {
     if (!restOver) return
-    navigator.vibrate?.(300)
+    feedback('restDone')
     dispatch({ type: 'REST_DONE' })
   }, [restOver, dispatch])
 
