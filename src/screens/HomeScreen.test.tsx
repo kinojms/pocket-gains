@@ -25,6 +25,14 @@ describe('HomeScreen', () => {
     expect(screen.getByText(/Upper Body: Push/)).toBeInTheDocument()
   })
 
+  it('shows an excited pet on a training day and a progress bar for XP', async () => {
+    const db = await makeTestDb((d) => saveProfile(d, makeProfile({ petName: 'Mochi' })))
+    renderRoutes(db, routes, ['/'])
+    await screen.findByText(/Mochi · Lv 1/)
+    expect(document.querySelector('.pet')).toHaveAttribute('data-mood', 'excited')
+    expect(screen.getByRole('progressbar', { name: /XP to next level/ })).toBeInTheDocument()
+  })
+
   it('offers to resume an unfinished session instead of dealing a new one', async () => {
     const db = await makeTestDb(async (d) => {
       await saveProfile(d, makeProfile())

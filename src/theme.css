@@ -113,11 +113,6 @@ a.choice { text-decoration: none; }
 .unavailable { opacity: 0.45; }
 /* end legacy:decks */
 
-/* legacy:home */
-.streak-row { padding: 0 4px; }
-.streak { font-size: 20px; font-weight: 800; }
-/* end legacy:home */
-
 /* legacy:progress */
 .stat { font-size: 28px; }
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
@@ -239,3 +234,9 @@ a.choice { text-decoration: none; }
 .rcard[data-rarity='3'] .rcard-inner::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%); transform: translateX(-120%); animation: rcard-shine 4s ease-in-out infinite; }
 @keyframes rcard-shine { 0%, 60% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
 @media (prefers-reduced-motion: reduce) { .rcard[data-rarity='3'] .rcard-inner::after { display: none; } }
+
+/* home */
+.home .meadow-pet { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.pet-level { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.pet-name { font-family: var(--font-display); font-size: 20px; }
+.quiet-link { font-weight: 800; padding: 8px; }
