@@ -1,6 +1,7 @@
 /// <reference lib="webworker" />
 import { cleanupOutdatedCaches, createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
+import { appWindow } from './swHelpers'
 
 declare const self: ServiceWorkerGlobalScope
 
@@ -40,8 +41,9 @@ self.addEventListener('notificationclick', (event) => {
   event.waitUntil(
     (async () => {
       const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true })
-      if (windows[0]) {
-        await windows[0].focus()
+      const win = appWindow(windows, self.registration.scope)
+      if (win) {
+        await win.focus()
         return
       }
       await self.clients.openWindow((event.notification.data as { url: string }).url)
