@@ -35,7 +35,7 @@ Open the site in Chrome → sign in → ⋮ → **Install app**.
 
 ## Reminders (one-time setup)
 
-1. Run `supabase/migrations/20261001000000_m2.sql` in the SQL Editor **before** deploying the M2 app.
+1. Run `supabase/migrations/20261001000000_m2.sql`, then `20261002000000_m2_plan_experience.sql`, in the SQL Editor **before** deploying the M2 app.
 2. Log in to the CLIs: `npx supabase login` (and `gh auth login` if needed).
 3. Keys: `node scripts/setup-vapid.mjs <project-ref> <your-email>`.
    This stores the private key only in Supabase secrets.

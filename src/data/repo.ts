@@ -1,7 +1,7 @@
 import { dateKey, type Weekday } from '../domain/dates'
 import type { PlanDays, PlanSnapshot } from '../domain/plan'
 import { RESUME_WINDOW_MS, type ActiveSession } from '../domain/session'
-import type { History, Profile, SessionRecord, SetLog, SetLogDraft } from '../domain/types'
+import type { Experience, History, Profile, SessionRecord, SetLog, SetLogDraft } from '../domain/types'
 import type { LocalProfile, PocketGainsDB, SyncMeta } from './db'
 
 const ACTIVE_KEY = 'activeSession'
@@ -141,10 +141,19 @@ export async function loadPlans(db: PocketGainsDB): Promise<PlanSnapshot[]> {
   return (await db.plans.toArray()).map(strip)
 }
 
-export async function savePlan(db: PocketGainsDB, days: PlanDays, isCustom: boolean, today = new Date()): Promise<PlanSnapshot> {
-  const snap: PlanSnapshot = { id: crypto.randomUUID(), effectiveFrom: dateKey(today), savedAt: new Date().toISOString(), days, isCustom }
-  await db.plans.put({ ...snap, dirty: 1, updatedAt: stamp() })
+export async function savePlan(
+  db: PocketGainsDB, days: PlanDays, isCustom: boolean, today = new Date(), experience: Experience | null = null,
+): Promise<PlanSnapshot> {
+  // savedAt breaks ties between snapshots from the same day, so it must be strictly increasing.
+  const updatedAt = stamp()
+  const snap: PlanSnapshot = { id: crypto.randomUUID(), effectiveFrom: dateKey(today), savedAt: updatedAt, days, isCustom, experience }
+  await db.plans.put({ ...snap, dirty: 1, updatedAt })
   return snap
+}
+
+export async function addPlanSnapshots(db: PocketGainsDB, snaps: Omit<PlanSnapshot, 'id'>[]): Promise<void> {
+  const updatedAt = stamp()
+  await db.plans.bulkPut(snaps.map((s) => ({ ...s, id: crypto.randomUUID(), dirty: 1 as const, updatedAt })))
 }
 
 export async function countDirty(db: PocketGainsDB): Promise<number> {

@@ -37,5 +37,6 @@ describe('PlanScreen', () => {
     renderRoutes(db, routes, ['/plan'])
     await user.click(await screen.findByRole('button', { name: 'Use recommended' }))
     await waitFor(async () => expect((await loadPlans(db))[0]?.isCustom).toBe(false))
+    expect((await loadPlans(db))[0].experience).toBe('consistent')
   })
 })

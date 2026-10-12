@@ -53,11 +53,13 @@ const sorenessFromRow = (r: Row): LocalSoreness => ({
 })
 
 const planToRow = (p: LocalPlan): Row => ({
-  id: p.id, effective_from: p.effectiveFrom, saved_at: p.savedAt, days: p.days, is_custom: p.isCustom, updated_at: p.updatedAt,
+  id: p.id, effective_from: p.effectiveFrom, saved_at: p.savedAt, days: p.days, is_custom: p.isCustom,
+  experience: p.experience ?? null, updated_at: p.updatedAt,
 })
 const planFromRow = (r: Row): LocalPlan => ({
   id: r.id as string, effectiveFrom: String(r.effective_from).slice(0, 10), savedAt: iso(r.saved_at),
-  days: r.days as PlanDays, isCustom: Boolean(r.is_custom), dirty: 0, updatedAt: iso(r.updated_at),
+  days: r.days as PlanDays, isCustom: Boolean(r.is_custom),
+  experience: (r.experience as Experience | null | undefined) ?? null, dirty: 0, updatedAt: iso(r.updated_at),
 })
 
 /** Postgres returns "2026-01-05T09:00:00+00:00"; normalize to JS ISO so local and remote compare equal. */

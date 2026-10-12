@@ -5,6 +5,7 @@ import { savePlan } from '../data/repo'
 import { WEEKDAYS, WEEKDAY_LABELS } from '../domain/dates'
 import { DEFAULT_SOURCES, recommendDefaults } from '../domain/defaults'
 import { coverageWarnings, planFor, recommendedDays, type PlanDays } from '../domain/plan'
+import type { Experience } from '../domain/types'
 import { useNow } from '../hooks/useNow'
 import { InfoSources } from '../ui/InfoSources'
 
@@ -15,17 +16,20 @@ export function PlanScreen() {
   const now = new Date(nowMs)
   const current = planFor(now, { profile, history, plans })
   const recommendedCount = recommendDefaults(profile, history, now).daysPerWeek
-  return <PlanEditor initialDays={current.days} isCustom={current.isCustom} recommendedCount={recommendedCount} />
+  return <PlanEditor initialDays={current.days} isCustom={current.isCustom} recommendedCount={recommendedCount} experience={profile.experience} />
 }
 
-function PlanEditor({ initialDays, isCustom, recommendedCount }: { initialDays: PlanDays; isCustom: boolean; recommendedCount: number }) {
+function PlanEditor({ initialDays, isCustom, recommendedCount, experience }: {
+  initialDays: PlanDays; isCustom: boolean; recommendedCount: number; experience: Experience
+}) {
   const { db, afterWrite } = useAppData()
   const [days, setDays] = useState(initialDays)
   const [saved, setSaved] = useState(false)
   const warnings = coverageWarnings(days, content.decks)
 
   async function save(nextDays: PlanDays, custom: boolean) {
-    await savePlan(db, nextDays, custom)
+    // A recommended week remembers the experience it is based on, so a later profile edit can't rewrite it.
+    await savePlan(db, nextDays, custom, new Date(), custom ? null : experience)
     await afterWrite()
     setDays(nextDays)
     setSaved(true)

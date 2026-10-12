@@ -3,8 +3,9 @@ import { Link } from 'react-router'
 import { SOURCES } from '../content/sources'
 import { useAppData } from '../data/AppData'
 import { pushReady, subscribePush, unsubscribePush } from '../data/push'
-import { saveProfile } from '../data/repo'
+import { addPlanSnapshots, saveProfile } from '../data/repo'
 import { supabase } from '../data/supabase'
+import { experienceChange } from '../domain/plan'
 import type { Equipment, Profile } from '../domain/types'
 import { PetColorPicker } from '../ui/PetColorPicker'
 import { PetSprite } from '../ui/PetSprite'
@@ -18,7 +19,7 @@ export function ProfileScreen() {
 }
 
 function ProfileForm({ initial }: { initial: Profile }) {
-  const { db, mode, dirtyCount, afterWrite, signOut, profile } = useAppData()
+  const { db, mode, dirtyCount, afterWrite, signOut, profile, history, plans } = useAppData()
   const [draft, setDraft] = useState(initial)
   const [saved, setSaved] = useState(false)
   const edit = (patch: Partial<Profile>) => {
@@ -35,6 +36,9 @@ function ProfileForm({ initial }: { initial: Profile }) {
   async function save() {
     // Save only what the form edits, on top of the latest profile (reminderDays is kept current by the app).
     const latest = profile ?? initial
+    if (draft.experience !== latest.experience) {
+      await addPlanSnapshots(db, experienceChange({ profile: latest, history, plans }, draft.experience, new Date()))
+    }
     await saveProfile(db, {
       ...latest,
       experience: draft.experience,

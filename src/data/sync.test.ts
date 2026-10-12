@@ -3,7 +3,7 @@ import { REST_WEEK } from '../domain/plan'
 import { makeProfile, makeSession } from '../domain/testFixtures'
 import { PocketGainsDB } from './db'
 import type { Remote, RemoteTable, Row } from './remote'
-import { addSetLogs, countDirty, createSession, getProfile, loadHistory, loadPlans, savePlan, saveProfile, updateSession } from './repo'
+import { addSetLogs, countDirty, createSession, addPlanSnapshots, getProfile, loadHistory, loadPlans, savePlan, saveProfile, updateSession } from './repo'
 import { pullAll, pushDirty } from './sync'
 
 class FakeRemote implements Remote {
@@ -130,5 +130,15 @@ describe('pullAll', () => {
     await pullAll(fresh, remote)
     expect(await getProfile(fresh)).toMatchObject({ reminderEnabled: true, reminderTime: '07:30', nudgeEnabled: true, reminderDays: ['mon', 'thu'] })
     expect(await loadPlans(fresh)).toEqual(await loadPlans(db))
+  })
+
+  it('round-trips the experience a recommended plan was based on, and the change snapshots', async () => {
+    await savePlan(db, REST_WEEK, false, new Date(2026, 0, 14), 'new')
+    await addPlanSnapshots(db, [{ effectiveFrom: '2026-01-20', savedAt: '2026-01-20T08:00:00.000Z', days: REST_WEEK, isCustom: false, experience: 'consistent' }])
+    await pushDirty(db, remote)
+    const fresh = new PocketGainsDB(`test-${crypto.randomUUID()}`)
+    await pullAll(fresh, remote)
+    const byDate = Object.fromEntries((await loadPlans(fresh)).map((p) => [p.effectiveFrom, p.experience]))
+    expect(byDate).toEqual({ '2026-01-14': 'new', '2026-01-20': 'consistent' })
   })
 })

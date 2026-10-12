@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { getProfile, saveProfile } from '../data/repo'
+import { getProfile, loadPlans, saveProfile } from '../data/repo'
 import { makeProfile } from '../domain/testFixtures'
 import { makeTestDb, renderRoutes } from '../test/renderApp'
 import { ProfileScreen } from './ProfileScreen'
@@ -30,6 +30,8 @@ describe('ProfileScreen', () => {
       experience: 'returning', equipment: ['bodyweight', 'band'], petName: 'Tank', petColor: 'sky', onboardedAt: original.onboardedAt, reminderDays,
     })
     for (const [row] of writes.mock.calls) expect(row.reminderDays).toEqual(reminderDays)
+    // The old experience is pinned for past days; the new one applies from today.
+    expect((await loadPlans(db)).map((p) => p.experience).sort()).toEqual(['new', 'returning'])
   })
 
   it('lists the research behind the defaults', async () => {

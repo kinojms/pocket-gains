@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { dateKey } from './dates'
-import { REST_WEEK, type PlanSnapshot } from './plan'
+import { experienceChange, planFor, plannedDeckId, REST_WEEK, type PlanSnapshot } from './plan'
 import { countedDays, streakInfo } from './streak'
 import { makeHistory, makeProfile, makeSession, makeSet } from './testFixtures'
 import type { History } from './types'
@@ -84,5 +84,32 @@ describe('streakInfo', () => {
     const after = run(trained([5, 6, 8, 10]), 11, [later])
     expect(after.current).toBe(before.current)
     expect([...after.days.values()]).toEqual([...before.days.values()])
+  })
+})
+
+describe('changing experience', () => {
+  // A 'new' user on the 3-day on-ramp (Mon/Wed/Fri) with a 3-day streak switches to 'consistent' on Saturday.
+  const fresh = makeProfile({ experience: 'new', onboardedAt: new Date(2026, 0, 5, 8).toISOString() })
+  const history = trained([5, 7, 9])
+  const withIds = (snaps: Omit<PlanSnapshot, 'id'>[]) => snaps.map((s, i) => ({ ...s, id: `x${i}` }))
+
+  it('never rewrites past days, and the new plan applies from today', () => {
+    const before = streakInfo({ profile: fresh, history, plans: [] }, day(10))
+    const plans = withIds(experienceChange({ profile: fresh, history, plans: [] }, 'consistent', day(10)))
+    const ctx = { profile: { ...fresh, experience: 'consistent' as const }, history, plans }
+    const after = streakInfo(ctx, day(10))
+    const past = (info: typeof after) => [...info.days.values()].filter((d) => d.key < '2026-01-10')
+    expect(past(after)).toEqual(past(before))
+    expect(after.current).toBe(3)
+    expect(plannedDeckId(day(13), ctx)).toBe('lower') // Tue: the 4-day plan from now on
+  })
+
+  it('leaves a custom week in effect today untouched', () => {
+    const custom: PlanSnapshot = {
+      id: 'c', effectiveFrom: '2026-01-05', savedAt: '2026-01-05T09:00:00.000Z', days: { ...REST_WEEK, sun: 'push' }, isCustom: true,
+    }
+    const plans = [custom, ...withIds(experienceChange({ profile: fresh, history, plans: [custom] }, 'consistent', day(10)))]
+    const ctx = { profile: { ...fresh, experience: 'consistent' as const }, history, plans }
+    expect(planFor(day(11), ctx)).toEqual({ days: custom.days, isCustom: true })
   })
 })
