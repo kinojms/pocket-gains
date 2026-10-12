@@ -4,6 +4,7 @@ import { useAppData } from '../data/AppData'
 import { saveProfile } from '../data/repo'
 import type { Equipment, Experience, PetColor } from '../domain/types'
 import { PetColorPicker } from '../ui/PetColorPicker'
+import { MeadowScene } from '../ui/MeadowScene'
 import { Pet } from '../ui/Pet'
 import { EXPERIENCES, OPTIONAL_EQUIPMENT } from '../ui/profileOptions'
 
@@ -42,10 +43,21 @@ export function OnboardingScreen() {
 
   return (
     <main className="screen full">
+      <div className="steps" role="progressbar" aria-label="Setup progress" aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={4}>
+        {[0, 1, 2, 3].map((i) => <i key={i} className={i <= step ? 'on' : undefined} />)}
+      </div>
+      <MeadowScene height={190} className="onboard-meadow">
+        <div className="meadow-pet">
+          <Pet
+            size={step === 3 ? 130 : 100} color={petColor}
+            mood={step === 0 ? 'happy' : step === 1 ? (experience ? 'excited' : 'happy') : step === 2 ? (equipment.length > 1 ? 'excited' : 'happy') : 'proud'}
+          />
+        </div>
+      </MeadowScene>
       {step === 0 && (
         <section className="stack">
           <h1>Welcome to Pocket Gains</h1>
-          <p>Each workout is a hand of exercise cards, built on published training research, with a pixel buddy that grows as you train.</p>
+          <p>Each workout is a hand of exercise cards, built on published training research, with a buddy that grows as you train.</p>
           <div className="panel stack">
             <strong>Before we start</strong>
             <p className="muted">
@@ -95,13 +107,12 @@ export function OnboardingScreen() {
       {step === 3 && (
         <section className="stack" style={{ alignItems: 'center', textAlign: 'center' }}>
           <h2>Meet your training buddy</h2>
-          <Pet size={180} mood="excited" color={petColor} />
           <label className="stack" style={{ width: '100%' }}>
             <span className="label">Pet name</span>
             <input type="text" value={petName} maxLength={20} onChange={(e) => setPetName(e.target.value)} />
           </label>
           <PetColorPicker value={petColor} onChange={setPetColor} />
-          <button className="btn btn-primary btn-block" onClick={() => void finish()}>Hatch &amp; start ▶</button>
+          <button className="btn btn-primary btn-block" onClick={() => void finish()}>Hatch &amp; start</button>
         </section>
       )}
     </main>

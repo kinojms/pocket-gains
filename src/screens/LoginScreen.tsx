@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router'
 import { useAppData } from '../data/AppData'
+import { MeadowScene } from '../ui/MeadowScene'
+import { Pet } from '../ui/Pet'
 
 export function LoginScreen() {
   const { mode, signedIn, signIn } = useAppData()
@@ -22,19 +24,26 @@ export function LoginScreen() {
   }
 
   return (
-    <form className="screen full" onSubmit={submit}>
-      <h1>Pocket Gains</h1>
-      <p className="muted">Sign in to sync your training.</p>
-      <label className="stack">
-        <span className="label">Email</span>
-        <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      </label>
-      <label className="stack">
-        <span className="label">Password</span>
-        <input type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-      </label>
-      {error && <p role="alert" style={{ color: 'var(--danger)' }}>{error}</p>}
-      <button className="btn btn-primary btn-block" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
-    </form>
+    <main className="screen full">
+      <MeadowScene height={230}>
+        <div className="meadow-pet">
+          <div className="bubble">Hi! Sign in so I can remember all our progress.</div>
+          <Pet size={110} />
+        </div>
+      </MeadowScene>
+      <h1 className="center-text">Pocket Gains</h1>
+      <form className="panel stack" onSubmit={submit}>
+        <label className="stack">
+          <span className="label">Email</span>
+          <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        </label>
+        <label className="stack">
+          <span className="label">Password</span>
+          <input type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        </label>
+        {error && <p role="alert" style={{ color: 'var(--danger)' }}>{error}</p>}
+        <button className="btn btn-primary btn-block" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
+      </form>
+    </main>
   )
 }

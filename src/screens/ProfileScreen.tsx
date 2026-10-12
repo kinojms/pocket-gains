@@ -7,6 +7,8 @@ import { addPlanSnapshots, saveProfile } from '../data/repo'
 import { supabase } from '../data/supabase'
 import { experienceChange } from '../domain/plan'
 import type { Equipment, Profile } from '../domain/types'
+import { FeedbackSettingsSection } from '../ui/FeedbackSettingsSection'
+import { Icon } from '../ui/Icon'
 import { PetColorPicker } from '../ui/PetColorPicker'
 import { Pet } from '../ui/Pet'
 import { EXPERIENCES, OPTIONAL_EQUIPMENT } from '../ui/profileOptions'
@@ -64,10 +66,18 @@ function ProfileForm({ initial }: { initial: Profile }) {
   return (
     <main className="screen">
       <h1>Profile</h1>
-      <span className="label">Goal: build muscle + strength</span>
+      <section className="panel profile-hero">
+        <Pet size={96} color={draft.petColor} />
+        <label className="stack" style={{ flex: 1 }}>
+          <span className="label">Pet name</span>
+          <input type="text" maxLength={20} value={draft.petName} onChange={(e) => edit({ petName: e.target.value })} />
+        </label>
+        <PetColorPicker value={draft.petColor} onChange={(petColor) => edit({ petColor })} />
+      </section>
 
-      <section className="stack">
+      <section className="panel stack">
         <h2>Experience</h2>
+        <span className="label">Goal: build muscle + strength</span>
         {EXPERIENCES.map((e) => (
           <button key={e.id} className="choice" aria-pressed={draft.experience === e.id} onClick={() => edit({ experience: e.id })}>
             <span className="stack" style={{ gap: 4 }}>
@@ -78,7 +88,7 @@ function ProfileForm({ initial }: { initial: Profile }) {
         ))}
       </section>
 
-      <section className="stack">
+      <section className="panel stack">
         <h2>Equipment</h2>
         <label className="choice" aria-checked="true">
           <input type="checkbox" checked disabled readOnly /> Bodyweight (always included)
@@ -90,29 +100,24 @@ function ProfileForm({ initial }: { initial: Profile }) {
         ))}
       </section>
 
-      <label className="stack">
-        <span className="label">Pet name</span>
-        <input type="text" maxLength={20} value={draft.petName} onChange={(e) => edit({ petName: e.target.value })} />
-      </label>
-      <div className="row" style={{ alignItems: 'center', gap: 12 }}>
-        <Pet size={72} color={draft.petColor} />
-        <PetColorPicker value={draft.petColor} onChange={(petColor) => edit({ petColor })} />
-      </div>
-
       <button className="btn btn-primary btn-block" onClick={() => void save()}>Save changes</button>
-      {saved && <p role="status">Saved ✓</p>}
+      {saved && <p role="status" className="center-text">Saved ✓</p>}
 
-      <Link className="btn btn-ghost center-text" to="/plan">Edit my week</Link>
+      <Link className="btn btn-block" to="/plan"><Icon name="calendar" /> Edit my week</Link>
 
       {mode === 'cloud' && supabase && profile && (
-        <RemindersSection
-          value={{ reminderEnabled: profile.reminderEnabled, reminderTime: profile.reminderTime, nudgeEnabled: profile.nudgeEnabled }}
-          onChange={(v) => void saveReminders(v)}
-          subscribe={() => subscribePush(supabase!, import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined)}
-          unsubscribe={() => unsubscribePush(supabase!)}
-          deviceReady={pushReady}
-        />
+        <section className="panel">
+          <RemindersSection
+            value={{ reminderEnabled: profile.reminderEnabled, reminderTime: profile.reminderTime, nudgeEnabled: profile.nudgeEnabled }}
+            onChange={(v) => void saveReminders(v)}
+            subscribe={() => subscribePush(supabase!, import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined)}
+            unsubscribe={() => unsubscribePush(supabase!)}
+            deviceReady={pushReady}
+          />
+        </section>
       )}
+
+      <FeedbackSettingsSection />
 
       <details className="panel">
         <summary>About the science</summary>

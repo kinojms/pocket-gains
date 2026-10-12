@@ -7,6 +7,7 @@ import { DEFAULT_SOURCES, recommendDefaults } from '../domain/defaults'
 import { coverageWarnings, planFor, recommendedDays, type PlanDays } from '../domain/plan'
 import type { Experience } from '../domain/types'
 import { useNow } from '../hooks/useNow'
+import { Icon } from '../ui/Icon'
 import { InfoSources } from '../ui/InfoSources'
 
 export function PlanScreen() {
@@ -45,10 +46,11 @@ function PlanEditor({ initialDays, isCustom, recommendedCount, experience }: {
         <span>Recommended right now: {recommendedCount} days a week, rotating decks so each muscle is trained about twice.</span>
         <InfoSources keys={DEFAULT_SOURCES.days} />
       </div>
-      <section className="stack">
+      <section className="week-grid">
         {WEEKDAYS.map((w) => (
-          <label key={w} className="row spread">
-            <span>{WEEKDAY_LABELS[w]}</span>
+          <label key={w} className={`day-tile${days[w] ? ' day-train' : ''}`}>
+            <span className="day-name">{WEEKDAY_LABELS[w].slice(0, 3)}</span>
+            <Icon name={days[w] ? 'muscle' : 'moon'} size={22} />
             <select
               aria-label={WEEKDAY_LABELS[w]}
               value={days[w] ?? ''}
@@ -63,7 +65,7 @@ function PlanEditor({ initialDays, isCustom, recommendedCount, experience }: {
           </label>
         ))}
       </section>
-      {warnings.map((w) => <p key={w} className="panel">⚠️ {w}</p>)}
+      {warnings.map((w) => <p key={w} className="panel row"><Icon name="warning" /> {w}</p>)}
       <button className="btn btn-primary btn-block" onClick={() => void save(days, true)}>Save my week</button>
       <button className="btn btn-ghost" onClick={() => void save(recommendedDays(recommendedCount), false)}>Use recommended</button>
       {saved && <p role="status">Saved ✓</p>}
