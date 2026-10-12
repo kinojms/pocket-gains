@@ -106,4 +106,15 @@ describe('pullAll', () => {
     const h = await loadHistory(db)
     expect(h.sessions[0].status).toBe('partial')
   })
+  it('does not overwrite a newer local row with an older remote copy (push/pull race)', async () => {
+    await pushDirty(db, remote)
+    // A concurrent push already sent this newer local version and cleared its dirty flag,
+    // but the pull fetched the remote table just before that push landed.
+    const id = '11111111-1111-4111-8111-111111111111'
+    await updateSession(db, id, { status: 'partial', endReason: 'tired' })
+    const local = (await db.sessions.get(id))!
+    await db.sessions.put({ ...local, dirty: 0 })
+    await pullAll(db, remote)
+    expect((await db.sessions.get(id))?.status).toBe('partial')
+  })
 })

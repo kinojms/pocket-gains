@@ -17,9 +17,10 @@ export function supabaseRemote(client: SupabaseClient): Remote {
       if (error) throw new Error(`${table} upsert failed: ${error.message}`)
     },
     async fetchAll(table) {
+      const key = table === 'profile' ? 'user_id' : 'id'
       const out: Row[] = []
       for (let from = 0; ; from += PAGE) {
-        const { data, error } = await client.from(table).select('*').range(from, from + PAGE - 1)
+        const { data, error } = await client.from(table).select('*').order(key).range(from, from + PAGE - 1)
         if (error) throw new Error(`${table} fetch failed: ${error.message}`)
         out.push(...(data ?? []))
         if (!data || data.length < PAGE) return out

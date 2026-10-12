@@ -87,7 +87,8 @@ async function pullTable<T extends SyncMeta & { id: string }>(
   await table.db.transaction('rw', table, async () => {
     for (const row of rows) {
       const local = await table.get(row.id)
-      if (!local || local.dirty === 0) await table.put(row)
+      // Never overwrite unsynced edits, and never replace a newer local row with an older remote copy.
+      if (!local || (local.dirty === 0 && row.updatedAt >= local.updatedAt)) await table.put(row)
     }
   })
 }
