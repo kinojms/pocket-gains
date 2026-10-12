@@ -11,6 +11,7 @@ import { ProfileScreen } from './screens/ProfileScreen'
 import { ProgressScreen } from './screens/ProgressScreen'
 import { SummaryScreen } from './screens/SummaryScreen'
 import { TabBar } from './ui/TabBar'
+import { UpdateBanner } from './ui/UpdateBanner'
 
 function Loading() {
   return <main className="screen full"><p className="muted">Loading…</p></main>
@@ -52,6 +53,7 @@ function TabLayout() {
   return (
     <>
       <Outlet />
+      <UpdateBanner />
       <TabBar />
     </>
   )
