@@ -6,7 +6,7 @@ import type { PullState } from '../gate'
 import { PetColorContext } from '../ui/petColor'
 import { db as defaultDb, type PocketGainsDB } from './db'
 import { supabaseRemote } from './remote'
-import { clearAll, countDirty, getProfile, loadActive, loadHistory, loadPlans, recoverSessions, setReminderDays } from './repo'
+import { clearAll, countDirty, getProfile, loadActive, loadHistory, finalizeOrphans, loadPlans, recoverStaleSession, setReminderDays } from './repo'
 import { supabase } from './supabase'
 import { createSyncer, pullAll } from './sync'
 
@@ -89,11 +89,11 @@ export function AppDataProvider({ children, database = defaultDb }: { children: 
     [database, refresh],
   )
 
-  // Finalize sessions older than 12 h, at startup and whenever the app comes back to the foreground.
-  // Recovery failing must never keep the app on "Loading…".
+  // Finalize this device's own session once it is older than 12 h, at startup and whenever the app comes back
+  // to the foreground. Recovery failing must never keep the app on "Loading…".
   useEffect(() => {
     const run = () => {
-      void recoverSessions(database)
+      void recoverStaleSession(database)
         .catch((e: unknown) => console.warn('session recovery failed', e))
         .finally(() => void refresh())
     }
@@ -152,16 +152,28 @@ export function AppDataProvider({ children, database = defaultDb }: { children: 
     if (syncer && signedIn) void syncer.syncNow()
   }, [refresh, signedIn, syncer])
 
+  // Writes based on synced data wait for this launch's first download, so a stale copy on this device
+  // never overwrites newer data from another device.
+  const pulled = initialPull === 'done'
+
+  // Orphaned sessions (e.g. left in progress on another device) are finalized only against fresh data.
+  useEffect(() => {
+    if (!pulled) return
+    void finalizeOrphans(database)
+      .then((n) => (n > 0 ? afterWrite() : undefined))
+      .catch((e: unknown) => console.warn('orphan finalization failed', e))
+  }, [pulled, database, afterWrite])
+
   // The reminder server only knows profile.reminderDays; keep it matching the plan in effect today.
   useEffect(() => {
     const { profile, history, plans } = loaded
-    if (!profile) return
+    if (!pulled || !profile) return
     const days = trainingDays(planFor(new Date(), { profile, history, plans }).days)
     if (days.join() === profile.reminderDays.join()) return
     void setReminderDays(database, days).then((saved) => {
       if (saved) void afterWrite()
     })
-  }, [loaded, database, afterWrite])
+  }, [pulled, loaded, database, afterWrite])
 
   const signIn = useCallback(async (email: string, password: string) => {
     if (!supabase) return null

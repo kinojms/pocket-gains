@@ -137,12 +137,6 @@ export async function finalizeOrphans(db: PocketGainsDB, now = Date.now()): Prom
   return stale.length
 }
 
-export async function recoverSessions(db: PocketGainsDB, now = Date.now()): Promise<RecoveryResult> {
-  const result = await recoverStaleSession(db, now)
-  await finalizeOrphans(db, now)
-  return result
-}
-
 export async function loadPlans(db: PocketGainsDB): Promise<PlanSnapshot[]> {
   return (await db.plans.toArray()).map(strip)
 }
