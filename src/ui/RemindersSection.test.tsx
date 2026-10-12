@@ -46,4 +46,15 @@ describe('RemindersSection', () => {
     expect(subscribe).toHaveBeenCalled()
     expect(screen.queryByText(/not on this phone yet/)).toBeNull()
   })
+
+  it('keeps the reminder time within the hours reminders are sent (until 22:45)', () => {
+    const onChange = vi.fn()
+    const on = { ...off, reminderEnabled: true }
+    render(<RemindersSection value={on} onChange={onChange} subscribe={vi.fn()} unsubscribe={vi.fn(async () => undefined)} deviceReady={async () => true} />)
+    const time = screen.getByLabelText('Reminder time')
+    expect(time).toHaveAttribute('max', '22:45')
+    fireEvent.change(time, { target: { value: '23:30' } })
+    expect(onChange).toHaveBeenLastCalledWith({ ...on, reminderTime: '22:45' })
+    expect(screen.getByText(/latest is 22:45/)).toBeInTheDocument()
+  })
 })

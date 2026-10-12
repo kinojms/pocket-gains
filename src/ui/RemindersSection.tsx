@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import type { PushResult } from '../data/push'
 
+/** The server sends reminders until 23:00 and runs every 15 minutes, so 22:45 is the last time that can fire. */
+const LATEST_TIME = '22:45'
+
 export interface ReminderSettings {
   reminderEnabled: boolean
   reminderTime: string
@@ -88,8 +91,11 @@ export function RemindersSection({ value, onChange, subscribe, unsubscribe, devi
       <label className="row spread">
         <span>Reminder time</span>
         <input
-          type="time" aria-label="Reminder time" value={value.reminderTime} disabled={!value.reminderEnabled}
-          onChange={(e) => e.target.value && onChange({ ...value, reminderTime: e.target.value })}
+          type="time" aria-label="Reminder time" value={value.reminderTime} max={LATEST_TIME} disabled={!value.reminderEnabled}
+          onChange={(e) => {
+            const t = e.target.value
+            if (t) onChange({ ...value, reminderTime: t > LATEST_TIME ? LATEST_TIME : t })
+          }}
         />
       </label>
       <label className="choice" aria-checked={value.nudgeEnabled}>
@@ -104,7 +110,7 @@ export function RemindersSection({ value, onChange, subscribe, unsubscribe, devi
       )}
       {problem && <p role="alert" className="panel">{problem}</p>}
       <p className="muted" style={{ fontSize: 13 }}>
-        At most one reminder a day, only on days in your week, and never after you've trained.
+        At most one reminder a day, only on days in your week, and never after you've trained. The latest is {LATEST_TIME}.
       </p>
     </section>
   )
