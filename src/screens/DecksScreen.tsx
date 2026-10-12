@@ -3,7 +3,7 @@ import { content } from '../content'
 import { useAppData } from '../data/AppData'
 import { availableChains, currentExerciseFor } from '../domain/recommender'
 import type { Equipment } from '../domain/types'
-import { TcgCard } from '../ui/TcgCard'
+import { RarityCard } from '../ui/RarityCard'
 
 const NEEDS: Record<Equipment, string> = { bodyweight: 'Needs nothing', dumbbell: 'Needs dumbbells', band: 'Needs resistance bands' }
 
@@ -31,7 +31,7 @@ export function DecksScreen() {
                 const next = chain.steps[chain.steps.indexOf(current.id) + 1]
                 return (
                   <div key={id} className={owned.has(id) ? undefined : 'unavailable'}>
-                    <TcgCard exercise={current}>
+                    <RarityCard exercise={current} size="mini">
                       {!owned.has(id) ? (
                         <span>{NEEDS[current.equipment]}</span>
                       ) : next ? (
@@ -39,7 +39,7 @@ export function DecksScreen() {
                       ) : (
                         <span>★ Top of its line</span>
                       )}
-                    </TcgCard>
+                    </RarityCard>
                   </div>
                 )
               })}

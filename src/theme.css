@@ -98,19 +98,6 @@ a.choice { text-decoration: none; }
 .pet-stage { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px 0 8px; background: radial-gradient(circle at 50% 60%, var(--surface-2), var(--bg) 70%); border-radius: var(--radius); }
 /* end legacy:pet */
 
-/* legacy:tcg */
-.tcg { background: linear-gradient(160deg, #ffcf5a, #f28c38); border-radius: 12px; padding: 6px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25); }
-.tcg-inner { background: #fff8e7; color: #2b1d0e; border-radius: 8px; overflow: hidden; }
-.tcg-head { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; font-weight: 800; }
-.tcg-stars { color: #c0392b; font-size: 13px; }
-.tcg-art { margin: 0 8px; height: 140px; border: 3px solid #d9a441; background: var(--surface-2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.tcg-art img { width: 100%; height: 100%; object-fit: cover; }
-.tcg-type { font-size: 11px; font-style: italic; color: #8a6d3b; text-align: center; padding: 4px 8px; }
-.tcg-stats { padding: 6px 10px; font-size: 13px; border-top: 1px solid #ecd9a8; display: flex; justify-content: space-between; }
-.tcg-foot { padding: 8px 10px; border-top: 1px solid #ecd9a8; }
-.tcg-foot .btn { width: 100%; min-height: 40px; padding: 8px; }
-/* end legacy:tcg */
-
 /* legacy:play */
 .play { flex: 1; }
 .ref { display: flex; gap: 10px; align-items: center; background: var(--surface); border: 0; border-radius: var(--radius); padding: 8px; color: var(--text); text-align: left; }
@@ -123,8 +110,6 @@ a.choice { text-decoration: none; }
 
 /* legacy:decks */
 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-.card-grid .tcg-art { height: 96px; }
-.card-grid .tcg-stats { flex-direction: column; font-size: 12px; }
 .unavailable { opacity: 0.45; }
 /* end legacy:decks */
 
@@ -232,3 +217,25 @@ a.choice { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .pet-body, .pet-pupils, .pet-z text, .pet-sparkles path, .pet-jump .pet-body, .meadow-cloud, .meadow-stars { animation: none; }
 }
+
+/* rarity cards */
+.rcard { --r: var(--rarity-1); --rb: var(--rarity-1-base); padding: 5px; border-radius: 18px; color: var(--text); background: linear-gradient(160deg, color-mix(in srgb, var(--r) 50%, white), var(--r)); box-shadow: 0 5px 0 var(--rb); }
+.rcard[data-rarity='2'] { --r: var(--rarity-2); --rb: var(--rarity-2-base); }
+.rcard[data-rarity='3'] { --r: var(--rarity-3); --rb: var(--rarity-3-base); box-shadow: 0 5px 0 var(--rb), 0 0 16px color-mix(in srgb, var(--r) 60%, transparent); }
+.rcard-inner { position: relative; overflow: hidden; border-radius: 13px; background: var(--panel); }
+.rcard-gem { position: absolute; top: 8px; left: 8px; z-index: 1; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--r); color: var(--on-color); font-family: var(--font-display); font-weight: 700; font-size: 13px; box-shadow: 0 2px 0 var(--rb); }
+.rcard-art { height: 150px; display: flex; align-items: center; justify-content: center; background: var(--panel-sunken); }
+.rcard-art img { width: 100%; height: 100%; object-fit: cover; }
+.rcard-body { display: flex; flex-direction: column; gap: 4px; padding: 8px 10px 10px; }
+.rcard-name { font-size: 17px; }
+.rcard-type { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+.rcard-meta { font-size: 12px; color: var(--text-muted); }
+.rcard-stats { display: flex; flex-wrap: wrap; gap: 6px; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 8px; background: var(--panel-sunken); font-size: 12px; font-weight: 800; }
+.rcard-foot { padding: 0 10px 10px; font-size: 13px; }
+.rcard-foot .btn { width: 100%; min-height: 44px; padding: 6px; font-size: 15px; }
+.rcard-mini .rcard-art { height: 92px; }
+.rcard-mini .rcard-name { font-size: 15px; }
+.rcard[data-rarity='3'] .rcard-inner::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%); transform: translateX(-120%); animation: rcard-shine 4s ease-in-out infinite; }
+@keyframes rcard-shine { 0%, 60% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+@media (prefers-reduced-motion: reduce) { .rcard[data-rarity='3'] .rcard-inner::after { display: none; } }

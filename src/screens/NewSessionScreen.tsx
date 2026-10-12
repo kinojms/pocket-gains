@@ -10,7 +10,7 @@ import { useNow } from '../hooks/useNow'
 import type { HandCard, SessionSettings } from '../domain/types'
 import { InfoSources } from '../ui/InfoSources'
 import { Stepper } from '../ui/Stepper'
-import { TcgCard } from '../ui/TcgCard'
+import { RarityCard } from '../ui/RarityCard'
 
 const REP_OPTIONS: { label: string; value: [number, number] | null }[] = [
   { label: 'Auto (per exercise)', value: null },
@@ -140,9 +140,9 @@ export function NewSessionScreen() {
       {hand.map((card, i) => {
         const canSwap = swapsLeft > 0 && swapOptions({ ...args, hand, index: i }).length > 0
         return (
-          <TcgCard key={card.chainId} exercise={content.exercises[card.exerciseId]} settings={s}>
+          <RarityCard key={card.chainId} exercise={content.exercises[card.exerciseId]} settings={s}>
             <button className="btn" disabled={!canSwap} onClick={() => setSwapping(i)}>⇄ Swap</button>
-          </TcgCard>
+          </RarityCard>
         )
       })}
       <button
