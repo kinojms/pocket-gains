@@ -5,6 +5,7 @@ import { EMPTY_HISTORY, type History, type Profile } from '../domain/types'
 import type { PullState } from '../gate'
 import { PetColorContext } from '../ui/petColor'
 import { db as defaultDb, type PocketGainsDB } from './db'
+import { unsubscribePush } from './push'
 import { supabaseRemote } from './remote'
 import { clearAll, countDirty, getProfile, loadActive, loadHistory, finalizeOrphans, loadPlans, recoverStaleSession, setReminderDays } from './repo'
 import { supabase } from './supabase'
@@ -184,7 +185,11 @@ export function AppDataProvider({ children, database = defaultDb }: { children: 
   }, [markSignedIn])
 
   const signOut = useCallback(async () => {
-    if (supabase) await supabase.auth.signOut()
+    if (supabase) {
+      // While still signed in, so the delete passes row-level security; never block sign-out on it.
+      await unsubscribePush(supabase).catch((e: unknown) => console.warn('could not remove push subscription', e))
+      await supabase.auth.signOut()
+    }
     writeDeviceFlag(false)
     setDeviceSignedIn(false)
     await clearAll(database)

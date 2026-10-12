@@ -6,13 +6,22 @@ import { AppDataProvider, useAppData } from './AppData'
 import { PocketGainsDB } from './db'
 import { getProfile, saveProfile } from './repo'
 
+const calls = vi.hoisted(() => [] as string[])
 vi.mock('./supabase', () => ({
   supabase: {
     auth: {
       getSession: async () => ({ data: { session: null } }),
       onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
-      signOut: async () => ({ error: null }),
+      signOut: async () => {
+        calls.push('auth.signOut')
+        return { error: null }
+      },
     },
+  },
+}))
+vi.mock('./push', () => ({
+  unsubscribePush: async () => {
+    calls.push('unsubscribePush')
   },
 }))
 
@@ -31,6 +40,8 @@ describe('signOut', () => {
     await userEvent.setup().click(screen.getByRole('button', { name: 'out' }))
     await waitFor(() => expect(reload).toHaveBeenCalled())
     expect(await getProfile(db)).toBeNull()
+    // The push subscription is removed while still signed in, so this phone stops getting the old account's reminders.
+    expect(calls).toEqual(['unsubscribePush', 'auth.signOut'])
     vi.unstubAllGlobals()
   })
 })
